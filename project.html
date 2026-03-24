@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>프로젝트 - Research Hub</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{--accent:#ffb7c5;--accent-dark:#e8829a;--accent-light:#ffe4ec;--bg1:#fff0f5;--bg2:#f8ffe0;--hdr-g:linear-gradient(135deg,#ffb7c5,#ffc8d4 50%,#c9f291);--text:#2d3148;--text2:#6b7194;--border:#ede8f0;--r:12px;--sh:0 4px 20px rgba(0,0,0,.08)}
+body.spring{--accent:#ffb7c5;--accent-dark:#e8829a;--accent-light:#ffe4ec;--bg1:#fff0f5;--bg2:#f8ffe0;--hdr-g:linear-gradient(135deg,#ffb7c5,#ffc8d4 50%,#c9f291)}
+body.summer{--accent:#48cae4;--accent-dark:#0096c7;--accent-light:#caf0f8;--bg1:#f0f9ff;--bg2:#e0fff8;--hdr-g:linear-gradient(135deg,#48cae4,#00b4d8 50%,#90e0ef)}
+body.autumn{--accent:#e07a2f;--accent-dark:#c45e10;--accent-light:#fde8d0;--bg1:#fff8f0;--bg2:#fff3e0;--hdr-g:linear-gradient(135deg,#e07a2f,#f4a261 50%,#ffcc80)}
+body.winter{--accent:#7986cb;--accent-dark:#3f51b5;--accent-light:#e8eaf6;--bg1:#f0f2ff;--bg2:#e8eaf6;--hdr-g:linear-gradient(135deg,#7986cb,#5c6bc0 50%,#9fa8da)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:linear-gradient(160deg,var(--bg1),var(--bg2));color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;min-height:100vh}
+button,input,textarea,select{font-family:inherit}
+a{color:var(--accent-dark);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Header */
+header{background:var(--hdr-g);padding:16px 24px;position:relative;overflow:hidden}
+header::before{content:'';position:absolute;top:-40px;right:-20px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.1);pointer-events:none}
+.hdr-inner{position:relative;z-index:1;display:flex;align-items:center;gap:16px}
+.back-btn{background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.4);border-radius:8px;padding:7px 14px;color:#fff;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:5px;flex-shrink:0;transition:.15s}
+.back-btn:hover{background:rgba(255,255,255,.4)}
+.hdr-proj-info{flex:1}
+.hdr-proj-name{font-size:20px;font-weight:800;color:#fff;letter-spacing:-.3px}
+.hdr-proj-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.hdr-tag{background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:2px 9px;font-size:10px;color:#fff;font-weight:600}
+.hdr-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.hdr-prog-box{background:rgba(255,255,255,.2);border-radius:8px;padding:8px 14px;min-width:120px}
+.hdr-prog-label{font-size:10px;color:rgba(255,255,255,.8);font-weight:600;margin-bottom:4px}
+.hdr-prog-bar{background:rgba(255,255,255,.3);border-radius:4px;height:6px}
+.hdr-prog-fill{height:100%;border-radius:4px;background:#fff;transition:.4s}
+.hdr-prog-pct{font-size:18px;font-weight:800;color:#fff;text-align:right;margin-top:3px}
+
+/* Tabs */
+.tab-bar{background:#fff;border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:0 20px;gap:0;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.tab-btn{padding:14px 18px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;border:none;background:none;border-bottom:2.5px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:.15s}
+.tab-btn.active{color:var(--accent-dark);border-bottom-color:var(--accent)}
+.tab-btn:hover:not(.active){color:var(--text);background:var(--accent-light)}
+
+/* Content */
+.tab-content{display:none;padding:20px;max-width:1100px;margin:0 auto}
+.tab-content.active{display:block}
+.section-card{background:#fff;border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px}
+.section-header{padding:14px 18px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.section-header h3{font-size:14px;font-weight:700}
+.section-body{padding:16px 18px}
+
+/* Buttons */
+.btn{border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:5px}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent-dark)}
+.btn-secondary{background:var(--accent-light);color:var(--accent-dark)}.btn-secondary:hover{background:var(--border)}
+.btn-outline{background:none;border:1px solid var(--border);color:var(--text2)}.btn-outline:hover{border-color:var(--accent);color:var(--accent-dark)}
+.btn-danger{background:#fee2e2;color:#dc2626}.btn-danger:hover{background:#fecaca}
+.btn-xs{padding:4px 9px;font-size:10px;border-radius:5px}
+
+/* Progress bar */
+.prog-bar-bg{background:var(--border);border-radius:6px;height:10px}
+.prog-bar-fill{height:100%;border-radius:6px;background:var(--accent);transition:.4s}
+
+/* Tags */
+.tag{display:inline-block;background:var(--accent-light);color:var(--accent-dark);border-radius:20px;padding:2px 8px;font-size:10px;font-weight:600;margin:2px}
+
+/* ── Tab 1: Overview ── */
+.goal-text{font-size:13px;line-height:1.7;color:var(--text);white-space:pre-wrap;min-height:40px}
+.goal-history{margin-top:10px;border-top:1px solid var(--border);padding-top:10px}
+.goal-history-item{font-size:11px;color:var(--text2);padding:4px 0;border-bottom:1px dashed var(--border)}
+.ms-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.ms-item:last-child{border-bottom:none}
+.ms-check{width:18px;height:18px;accent-color:var(--accent);cursor:pointer;flex-shrink:0;margin-top:2px}
+.ms-content{flex:1}
+.ms-title{font-size:13px;font-weight:600}
+.ms-title.done{text-decoration:line-through;color:var(--text2)}
+.ms-method{font-size:11px;color:var(--text2);margin-top:3px;font-style:italic}
+.ms-date{font-size:10px;color:var(--text2)}
+.ms-actions{display:flex;gap:4px}
+/* Timeline */
+.timeline-wrap{overflow-x:auto;padding:10px 0}
+.timeline{display:flex;align-items:center;gap:0;min-width:600px;padding:20px 10px;position:relative}
+.timeline::before{content:'';position:absolute;top:50%;left:10px;right:10px;height:2px;background:var(--border);z-index:0}
+.tl-item{display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;z-index:1;flex:1;min-width:80px}
+.tl-dot{width:28px;height:28px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--accent);display:flex;align-items:center;justify-content:center;font-size:13px;background:#fff}
+.tl-dot.done{background:var(--accent)}
+.tl-label{font-size:9px;font-weight:600;text-align:center;max-width:70px;line-height:1.3}
+.tl-date{font-size:8px;color:var(--text2)}
+
+/* ── Tab 2: Notes ── */
+.notes-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.notes-toolbar input{flex:1;min-width:150px;border:1px solid var(--border);border-radius:8px;padding:7px 11px;font-size:12px;outline:none;transition:.15s}
+.notes-toolbar input:focus{border-color:var(--accent)}
+.tag-filters{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px}
+.tag-filter{background:var(--border);color:var(--text2);border:none;border-radius:20px;padding:3px 10px;font-size:11px;cursor:pointer;transition:.1s;font-weight:600}
+.tag-filter.active{background:var(--accent);color:#fff}
+.notes-list{display:flex;flex-direction:column;gap:8px}
+.note-item{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:.15s}
+.note-item:hover{border-color:var(--accent);box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.note-item-header{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.note-item-title{font-size:13px;font-weight:700;flex:1}
+.note-item-date{font-size:10px;color:var(--text2);flex-shrink:0}
+.note-item-preview{font-size:11px;color:var(--text2);line-height:1.5;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;margin-bottom:5px}
+.note-item-tags{display:flex;flex-wrap:wrap;gap:3px}
+
+/* ── Tab 3: Data ── */
+.data-type-btns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.data-type-btn{background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px;font-weight:700;cursor:pointer;transition:.15s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.data-type-btn span{font-size:18px}
+.data-type-btn:hover{border-color:var(--accent);background:var(--accent-light)}
+.data-list{display:flex;flex-direction:column;gap:8px}
+.data-item{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:10px}
+.data-item:hover{border-color:var(--accent)}
+.data-icon{font-size:22px;flex-shrink:0}
+.data-meta{flex:1;min-width:0}
+.data-title{font-size:13px;font-weight:700}
+.data-desc{font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
+.data-date{font-size:10px;color:var(--text2)}
+.data-actions{display:flex;gap:4px}
+
+/* Code block */
+.code-block{background:#1e1e2e;color:#cdd6f4;border-radius:8px;padding:12px;font-family:'Consolas','Monaco',monospace;font-size:12px;overflow-x:auto;white-space:pre;line-height:1.6;max-height:300px}
+.code-block-wrap{position:relative}
+.code-lang-badge{position:absolute;top:6px;right:8px;background:rgba(255,255,255,.1);color:#a6adc8;border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700}
+
+/* Table */
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th,.data-table td{border:1px solid var(--border);padding:6px 10px}
+.data-table th{background:var(--accent-light);font-weight:700;color:var(--text)}
+
+/* ── Tab 4: TODO ── */
+.todo-sub-tabs{display:flex;gap:0;margin-bottom:14px;border:1px solid var(--border);border-radius:8px;overflow:hidden;width:fit-content}
+.todo-sub-tab{padding:7px 16px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;border:none;background:#fff;transition:.1s}
+.todo-sub-tab.active{background:var(--accent);color:#fff}
+.todo-add-form{display:grid;grid-template-columns:1fr auto auto auto;gap:8px;align-items:end;margin-bottom:14px;background:#fff;padding:12px;border-radius:10px;border:1px solid var(--border)}
+.todo-add-form input,.todo-add-form select{border:1px solid var(--border);border-radius:7px;padding:7px 10px;font-size:12px;outline:none;transition:.15s;color:var(--text)}
+.todo-add-form input:focus,.todo-add-form select:focus{border-color:var(--accent)}
+.todo-items{display:flex;flex-direction:column;gap:6px}
+.todo-row{display:flex;align-items:center;gap:8px;padding:9px 12px;background:#fff;border-radius:9px;border:1px solid var(--border);transition:.1s}
+.todo-row:hover{border-color:var(--accent)}
+.todo-row.done-row{opacity:.6}
+.todo-row input[type=checkbox]{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;flex-shrink:0}
+.todo-row-title{flex:1;font-size:12px;font-weight:600}
+.todo-row.done-row .todo-row-title{text-decoration:line-through;color:var(--text2)}
+.prio-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;flex-shrink:0}
+.prio-high{background:#fee2e2;color:#dc2626}
+.prio-mid{background:#fef3c7;color:#d97706}
+.prio-low{background:#dcfce7;color:#16a34a}
+.cat-badge{font-size:9px;background:var(--accent-light);color:var(--accent-dark);padding:2px 6px;border-radius:4px;font-weight:700}
+.todo-due{font-size:10px;color:var(--text2);flex-shrink:0}
+.prog-summary{background:var(--accent-light);border-radius:8px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:14px}
+.prog-summary-text{font-size:12px;font-weight:700;color:var(--accent-dark)}
+
+/* ── Tab 5: Papers ── */
+.search-box{display:flex;gap:8px;margin-bottom:14px}
+.search-box input{flex:1;border:1px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;outline:none;transition:.15s}
+.search-box input:focus{border-color:var(--accent)}
+.keyword-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.kw-chip{background:var(--accent-light);color:var(--accent-dark);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;transition:.1s;display:flex;align-items:center;gap:4px}
+.kw-chip:hover{background:var(--accent);color:#fff}
+.paper-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px}
+.paper-title{font-size:13px;font-weight:700;margin-bottom:4px;line-height:1.4}
+.paper-meta{font-size:11px;color:var(--text2);margin-bottom:6px}
+.paper-abstract{font-size:11px;color:var(--text);line-height:1.6;max-height:60px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;margin-bottom:8px}
+.paper-actions{display:flex;gap:6px;align-items:center}
+.refs-list{display:flex;flex-direction:column;gap:8px}
+.ref-item{background:#fff;border:1px solid var(--border);border-radius:9px;padding:11px 14px;display:flex;gap:10px}
+.ref-number{font-size:12px;font-weight:800;color:var(--accent);flex-shrink:0;width:24px}
+.ref-content{flex:1;min-width:0}
+.ref-title{font-size:12px;font-weight:700;margin-bottom:3px}
+.ref-authors{font-size:10px;color:var(--text2)}
+.ref-del{background:none;border:none;cursor:pointer;color:#ccc;font-size:14px}
+.ref-del:hover{color:#e55}
+
+/* Modals */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;display:none;align-items:center;justify-content:center;padding:16px}
+.modal-bg.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:22px;width:520px;max-width:100%;max-height:90vh;overflow-y:auto;position:relative}
+.modal-lg{width:720px}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--text2);width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.modal-close:hover{background:var(--border)}
+.modal h3{font-size:16px;font-weight:800;margin-bottom:14px;padding-right:30px}
+.form-group{margin-bottom:12px}
+.form-group label{display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:4px}
+.form-group input,.form-group textarea,.form-group select{width:100%;border:1px solid var(--border);border-radius:8px;padding:8px 11px;font-size:12px;outline:none;color:var(--text);transition:.15s}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--accent)}
+.form-group textarea{resize:vertical;min-height:80px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.btn-cancel{background:none;border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;color:var(--text2)}
+.btn-ok{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s}
+.btn-ok:hover{background:var(--accent-dark)}
+
+/* Attachments */
+.attach-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.attach-thumb{width:70px;height:70px;border-radius:6px;object-fit:cover;border:1px solid var(--border)}
+.attach-file{display:flex;flex-direction:column;align-items:center;justify-content:center;width:70px;height:70px;border-radius:6px;background:var(--accent-light);border:1px solid var(--accent);font-size:9px;color:var(--accent-dark);font-weight:600;text-align:center;padding:4px;cursor:default}
+.attach-file span{font-size:20px;margin-bottom:2px}
+
+/* Note detail */
+.note-full-body{font-size:13px;line-height:1.8;white-space:pre-wrap;color:var(--text);margin:10px 0}
+
+/* Chart container */
+.chart-wrap{position:relative;max-height:280px;margin-top:10px}
+
+/* Data input form */
+.table-input{width:100%;border-collapse:collapse;margin-top:8px}
+.table-input th,.table-input td{border:1px solid var(--border);padding:4px}
+.table-input th{background:var(--accent-light);font-size:11px;font-weight:700}
+.table-input td input{width:100%;border:none;padding:4px;font-size:11px;outline:none;background:transparent}
+.table-input-row-add{margin-top:4px;font-size:11px;color:var(--accent-dark);cursor:pointer;font-weight:600}
+
+/* Loading */
+.loading{display:flex;align-items:center;justify-content:center;padding:30px;color:var(--text2);font-size:13px;gap:8px}
+.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.empty-state{text-align:center;padding:36px 20px;color:var(--text2)}
+.empty-state .es-icon{font-size:36px;margin-bottom:8px}
+.empty-state p{font-size:13px}
+
+@media(max-width:700px){
+  .todo-add-form{grid-template-columns:1fr;gap:6px}
+  .tab-btn{padding:12px 10px;font-size:11px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hdr-inner">
+    <button class="back-btn" onclick="history.back()">← 홈</button>
+    <div class="hdr-proj-info">
+      <div class="hdr-proj-name" id="hdrProjName">프로젝트 로딩 중...</div>
+      <div class="hdr-proj-tags" id="hdrProjTags"></div>
+    </div>
+    <div class="hdr-right">
+      <div class="hdr-prog-box">
+        <div class="hdr-prog-label">전체 진행률</div>
+        <div class="hdr-prog-bar"><div class="hdr-prog-fill" id="hdrProgFill" style="width:0%"></div></div>
+        <div class="hdr-prog-pct" id="hdrProgPct">0%</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="tab-bar">
+  <button class="tab-btn active" data-tab="overview">📊 Overview</button>
+  <button class="tab-btn" data-tab="notes">📓 연구노트</button>
+  <button class="tab-btn" data-tab="data">🧪 실험데이터</button>
+  <button class="tab-btn" data-tab="todo">✅ TODO</button>
+  <button class="tab-btn" data-tab="papers">📚 논문 & 참고문헌</button>
+</div>
+
+<!-- Tab: Overview -->
+<div class="tab-content active" id="tab-overview">
+  <!-- Progress -->
+  <div class="section-card">
+    <div class="section-header">
+      <h3>📈 전체 진행률</h3>
+    </div>
+    <div class="section-body">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="prog-bar-bg" style="flex:1"><div class="prog-bar-fill" id="ovProgFill" style="width:0%"></div></div>
+        <span style="font-size:16px;font-weight:800;color:var(--accent-dark)" id="ovProgPct">0%</span>
+      </div>
+      <div style="font-size:11px;color:var(--text2);margin-top:6px" id="ovProgLabel"></div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="section-card">
+    <div class="section-header"><h3>🕐 수평 타임라인</h3></div>
+    <div class="section-body" style="padding:0">
+      <div class="timeline-wrap"><div class="timeline" id="timeline"></div></div>
+    </div>
+  </div>
+
+  <!-- Milestones -->
+  <div class="section-card">
+    <div class="section-header">
+      <h3>🎯 마일스톤</h3>
+      <button class="btn btn-primary btn-xs" onclick="openMsModal()">+ 추가</button>
+    </div>
+    <div class="section-body">
+      <div id="msListEl"></div>
+    </div>
+  </div>
+
+  <!-- Research Goal -->
+  <div class="section-card">
+    <div class="section-header">
+      <h3>🎓 연구 목표</h3>
+      <button class="btn btn-secondary btn-xs" onclick="editGoal()">✏️ 수정</button>
+    </div>
+    <div class="section-body">
+      <div class="goal-text" id="goalText">연구 목표가 없습니다. 수정 버튼을 눌러 추가해보세요.</div>
+      <div class="goal-history" id="goalHistory" style="display:none">
+        <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:5px">수정 이력</div>
+        <div id="goalHistoryList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tab: Notes -->
+<div class="tab-content" id="tab-notes">
+  <div class="section-card">
+    <div class="section-header">
+      <h3>📓 연구노트</h3>
+      <button class="btn btn-primary btn-xs" onclick="openNoteModal()">+ 새 노트</button>
+    </div>
+    <div class="section-body">
+      <div class="notes-toolbar">
+        <input id="noteSearch" placeholder="노트 검색..." oninput="renderNotes()"/>
+      </div>
+      <div class="tag-filters" id="noteTagFilters"></div>
+      <div class="notes-list" id="notesList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Tab: Data -->
+<div class="tab-content" id="tab-data">
+  <div class="section-card">
+    <div class="section-header"><h3>🧪 실험 데이터</h3></div>
+    <div class="section-body">
+      <div class="data-type-btns">
+        <button class="data-type-btn" onclick="openDataModal('table')"><span>📊</span>수치 데이터</button>
+        <button class="data-type-btn" onclick="openDataModal('chart')"><span>🌡️</span>그래프</button>
+        <button class="data-type-btn" onclick="openDataModal('code')"><span>💻</span>코드</button>
+        <button class="data-type-btn" onclick="openDataModal('image')"><span>🖼️</span>이미지</button>
+        <button class="data-type-btn" onclick="openDataModal('csv')"><span>📄</span>CSV</button>
+        <button class="data-type-btn" onclick="openDataModal('text')"><span>📝</span>자유형식</button>
+      </div>
+      <div class="data-list" id="dataList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Tab: TODO -->
+<div class="tab-content" id="tab-todo">
+  <div class="section-card">
+    <div class="section-header"><h3>✅ TODO 목록</h3></div>
+    <div class="section-body">
+      <div class="todo-sub-tabs" id="todoSubTabs">
+        <button class="todo-sub-tab active" data-filter="all">전체</button>
+        <button class="todo-sub-tab" data-filter="week">이번 주</button>
+        <button class="todo-sub-tab" data-filter="month">이번 달</button>
+      </div>
+      <div class="prog-summary">
+        <div class="prog-bar-bg" style="flex:1;height:8px"><div class="prog-bar-fill" id="todoProgFill" style="width:0%"></div></div>
+        <div class="prog-summary-text" id="todoProgText">0 / 0 완료</div>
+      </div>
+      <div class="todo-add-form">
+        <input id="tdTitle" placeholder="할 일 제목 *" />
+        <select id="tdPrio">
+          <option value="high">🔴 높음</option>
+          <option value="mid" selected>🟡 중간</option>
+          <option value="low">🟢 낮음</option>
+        </select>
+        <select id="tdCat">
+          <option value="실험">실험</option>
+          <option value="분석">분석</option>
+          <option value="문헌">문헌</option>
+          <option value="기타">기타</option>
+        </select>
+        <input type="date" id="tdDue" />
+        <button class="btn btn-primary" style="grid-column:1/-1" onclick="addTodoItem()">+ 추가</button>
+      </div>
+      <div class="todo-items" id="todoItems"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Tab: Papers -->
+<div class="tab-content" id="tab-papers">
+  <div class="section-card">
+    <div class="section-header"><h3>🔍 논문 검색 (arXiv)</h3></div>
+    <div class="section-body">
+      <div style="font-size:11px;color:var(--text2);margin-bottom:8px">프로젝트 키워드로 빠르게 검색:</div>
+      <div class="keyword-chips" id="kwChips"></div>
+      <div class="search-box">
+        <input id="paperSearchInput" placeholder="논문 검색어 입력..." onkeydown="if(event.key==='Enter')searchPapers()"/>
+        <button class="btn btn-primary" onclick="searchPapers()">🔍 검색</button>
+      </div>
+      <div id="paperResults"></div>
+    </div>
+  </div>
+  <div class="section-card">
+    <div class="section-header">
+      <h3>📚 내 참고문헌</h3>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-secondary btn-xs" onclick="openManualRefModal()">+ 직접 추가</button>
+        <button class="btn btn-outline btn-xs" onclick="exportRefs()">📤 내보내기</button>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="refs-list" id="refsList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Milestone -->
+<div class="modal-bg" id="msModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('msModal')">✕</button>
+    <h3>🎯 마일스톤 추가</h3>
+    <div class="form-group"><label>마일스톤 제목 *</label><input id="msTitle" placeholder="예: 1차 실험 완료"/></div>
+    <div class="form-group"><label>목표 날짜</label><input type="date" id="msDueDate"/></div>
+    <div class="form-group"><label>설명</label><textarea id="msDesc" placeholder="마일스톤 상세 설명..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('msModal')">취소</button>
+      <button class="btn-ok" onclick="saveMilestone()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Milestone Achievement -->
+<div class="modal-bg" id="msAchieveModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('msAchieveModal')">✕</button>
+    <h3>✅ 달성 기록</h3>
+    <input type="hidden" id="msAchieveId"/>
+    <div class="form-group"><label>달성 방법 / 결과</label><textarea id="msAchieveMethod" placeholder="어떻게 달성했는지 기록하세요..." rows="4"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('msAchieveModal')">취소</button>
+      <button class="btn-ok" onclick="saveMsAchieve()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Goal Edit -->
+<div class="modal-bg" id="goalModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('goalModal')">✕</button>
+    <h3>🎓 연구 목표 수정</h3>
+    <div class="form-group"><label>연구 목표</label><textarea id="goalInput" rows="5" placeholder="연구의 목표와 방향성을 기술하세요..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('goalModal')">취소</button>
+      <button class="btn-ok" onclick="saveGoal()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Note Edit/Create -->
+<div class="modal-bg" id="noteModal">
+  <div class="modal modal-lg">
+    <button class="modal-close" onclick="closeModal('noteModal')">✕</button>
+    <h3 id="noteModalTitle">📓 새 노트 작성</h3>
+    <input type="hidden" id="noteEditId"/>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="form-group"><label>제목 *</label><input id="noteTitle" placeholder="노트 제목"/></div>
+      <div class="form-group"><label>날짜</label><input type="date" id="noteDate"/></div>
+    </div>
+    <div class="form-group"><label>태그 (쉼표로 구분)</label><input id="noteTags" placeholder="#실험 #시뮬레이션 #코드"/></div>
+    <div class="form-group"><label>본문</label><textarea id="noteBody" rows="8" placeholder="연구 내용을 상세히 기록하세요..."></textarea></div>
+    <div class="form-group">
+      <label>파일/이미지 첨부</label>
+      <input type="file" id="noteFiles" multiple accept="image/*,.pdf,.doc,.docx,.txt" onchange="handleNoteFiles(this)"/>
+      <div class="attach-list" id="noteAttachPreview"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('noteModal')">취소</button>
+      <button class="btn-ok" onclick="saveNote()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Note Detail -->
+<div class="modal-bg" id="noteDetailModal">
+  <div class="modal modal-lg">
+    <button class="modal-close" onclick="closeModal('noteDetailModal')">✕</button>
+    <div id="noteDetailContent"></div>
+  </div>
+</div>
+
+<!-- Modal: Data Entry -->
+<div class="modal-bg" id="dataModal">
+  <div class="modal modal-lg">
+    <button class="modal-close" onclick="closeModal('dataModal')">✕</button>
+    <h3 id="dataModalTitle">데이터 추가</h3>
+    <input type="hidden" id="dataModalType"/>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="form-group"><label>제목 *</label><input id="dataTitle" placeholder="데이터 제목"/></div>
+      <div class="form-group"><label>날짜</label><input type="date" id="dataDate"/></div>
+    </div>
+    <div class="form-group"><label>설명</label><input id="dataDesc" placeholder="간단한 설명..."/></div>
+    <!-- Type-specific inputs -->
+    <div id="dataTypeInput"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('dataModal')">취소</button>
+      <button class="btn-ok" onclick="saveData()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Data Detail -->
+<div class="modal-bg" id="dataDetailModal">
+  <div class="modal modal-lg">
+    <button class="modal-close" onclick="closeModal('dataDetailModal')">✕</button>
+    <div id="dataDetailContent"></div>
+  </div>
+</div>
+
+<!-- Modal: Manual Ref -->
+<div class="modal-bg" id="refModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('refModal')">✕</button>
+    <h3>📚 참고문헌 추가</h3>
+    <div class="form-group"><label>제목 *</label><input id="refTitle" placeholder="논문/책 제목"/></div>
+    <div class="form-group"><label>저자</label><input id="refAuthors" placeholder="저자명"/></div>
+    <div class="form-group"><label>연도</label><input id="refYear" placeholder="2024" type="number"/></div>
+    <div class="form-group"><label>출처/저널/URL</label><input id="refSource" placeholder="Nature, arXiv:2401.xxxxx, https://..."/></div>
+    <div class="form-group"><label>초록/메모</label><textarea id="refAbstract" rows="3" placeholder="요약 또는 메모..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('refModal')">취소</button>
+      <button class="btn-ok" onclick="saveRef()">저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Utils
+const LS={
+  get:(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}},
+  set:(k,v)=>localStorage.setItem(k,JSON.stringify(v))
+};
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
+function escHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function fmtDate(s){if(!s)return'';try{return new Date(s+'T00:00:00').toLocaleDateString('ko-KR',{year:'numeric',month:'short',day:'numeric'})}catch{return s}}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+document.querySelectorAll('.modal-bg').forEach(bg=>bg.addEventListener('click',e=>{if(e.target===bg)bg.classList.remove('open')}));
+
+// ── Season
+function getSeason(m){if(m>=3&&m<=5)return'spring';if(m>=6&&m<=8)return'summer';if(m>=9&&m<=11)return'autumn';return'winter'}
+document.body.classList.add(getSeason(new Date().getMonth()+1));
+
+// ── Load project
+const urlParams=new URLSearchParams(location.search);
+const projId=urlParams.get('id');
+if(!projId){document.querySelector('.hdr-proj-name').textContent='프로젝트를 찾을 수 없음';throw new Error('No project ID')}
+
+function getProj(){
+  return LS.get('rh_projects',[]).find(p=>p.id===projId)||null;
+}
+function K(suffix){return`project_${projId}_${suffix}`}
+function getData(k,d){return LS.get(K(k),d)}
+function setData(k,v){LS.set(K(k),v)}
+
+// ── Init header
+function initHeader(){
+  const p=getProj();
+  if(!p){document.querySelector('.hdr-proj-name').textContent='프로젝트를 찾을 수 없음';return}
+  document.title=p.name+' - Research Hub';
+  document.getElementById('hdrProjName').textContent=p.name;
+  document.getElementById('hdrProjTags').innerHTML=(p.tags||[]).map(t=>`<span class="hdr-tag">${escHtml(t)}</span>`).join('');
+}
+
+// ── Progress
+function calcProgress(){
+  const ms=getData('milestones',[]);
+  if(!ms.length)return 0;
+  return Math.round(ms.filter(m=>m.done).length/ms.length*100);
+}
+function updateProgress(){
+  const pct=calcProgress();
+  document.getElementById('hdrProgFill').style.width=pct+'%';
+  document.getElementById('hdrProgPct').textContent=pct+'%';
+  document.getElementById('ovProgFill').style.width=pct+'%';
+  document.getElementById('ovProgPct').textContent=pct+'%';
+  const ms=getData('milestones',[]);
+  document.getElementById('ovProgLabel').textContent=`마일스톤 ${ms.filter(m=>m.done).length} / ${ms.length} 완료`;
+}
+
+// ── Tabs
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    if(btn.dataset.tab==='overview')renderTimeline();
+    if(btn.dataset.tab==='notes')renderNotes();
+    if(btn.dataset.tab==='data')renderDataList();
+    if(btn.dataset.tab==='todo')renderTodoItems();
+    if(btn.dataset.tab==='papers')renderRefs();
+  };
+});
+
+// ────────────────────────────────────────────────
+// TAB 1: Overview
+// ────────────────────────────────────────────────
+
+// Milestones
+function getMilestones(){return getData('milestones',[])}
+function saveMilestones(ms){setData('milestones',ms)}
+
+function openMsModal(){
+  document.getElementById('msTitle').value='';
+  document.getElementById('msDueDate').value='';
+  document.getElementById('msDesc').value='';
+  document.getElementById('msModal').classList.add('open');
+}
+function saveMilestone(){
+  const title=document.getElementById('msTitle').value.trim();
+  if(!title){alert('제목을 입력해주세요');return}
+  const ms=getMilestones();
+  ms.push({id:uid(),title,dueDate:document.getElementById('msDueDate').value,desc:document.getElementById('msDesc').value,done:false,doneAt:null,method:''});
+  saveMilestones(ms);closeModal('msModal');
+  renderMilestones();updateProgress();renderTimeline();
+}
+function toggleMs(id){
+  const ms=getMilestones();
+  const m=ms.find(x=>x.id===id);if(!m)return;
+  if(!m.done){
+    m.done=true;m.doneAt=new Date().toISOString().slice(0,10);
+    document.getElementById('msAchieveId').value=id;
+    document.getElementById('msAchieveMethod').value=m.method||'';
+    document.getElementById('msAchieveModal').classList.add('open');
+  }else{
+    if(!confirm('달성 취소하시겠습니까?'))return;
+    m.done=false;m.doneAt=null;m.method='';
+  }
+  saveMilestones(ms);renderMilestones();updateProgress();renderTimeline();
+}
+function saveMsAchieve(){
+  const id=document.getElementById('msAchieveId').value;
+  const ms=getMilestones();
+  const m=ms.find(x=>x.id===id);if(m)m.method=document.getElementById('msAchieveMethod').value;
+  saveMilestones(ms);closeModal('msAchieveModal');renderMilestones();
+}
+function deleteMs(id){
+  if(!confirm('마일스톤을 삭제하시겠습니까?'))return;
+  saveMilestones(getMilestones().filter(m=>m.id!==id));
+  renderMilestones();updateProgress();renderTimeline();
+}
+
+function renderMilestones(){
+  const ms=getMilestones();
+  const el=document.getElementById('msListEl');
+  if(!ms.length){el.innerHTML='<div class="empty-state"><div class="es-icon">🎯</div><p>마일스톤이 없습니다. 추가해보세요.</p></div>';return}
+  el.innerHTML=ms.map(m=>`<div class="ms-item">
+    <input type="checkbox" class="ms-check" ${m.done?'checked':''} onchange="toggleMs('${m.id}')">
+    <div class="ms-content">
+      <div class="ms-title${m.done?' done':''}">${escHtml(m.title)}</div>
+      ${m.desc?`<div class="ms-method">${escHtml(m.desc)}</div>`:''}
+      ${m.method?`<div class="ms-method">✅ ${escHtml(m.method)}</div>`:''}
+      <div class="ms-date">${m.dueDate?'목표: '+fmtDate(m.dueDate):''}${m.doneAt?' · 달성: '+fmtDate(m.doneAt):''}</div>
+    </div>
+    <div class="ms-actions">
+      <button class="btn btn-danger btn-xs" onclick="deleteMs('${m.id}')">삭제</button>
+    </div>
+  </div>`).join('');
+}
+
+// Timeline
+function renderTimeline(){
+  const ms=getMilestones();
+  const notes=getData('notes',[]);
+  const dataItems=getData('data',[]);
+  const items=[];
+  ms.filter(m=>m.done&&m.doneAt).forEach(m=>items.push({date:m.doneAt,label:m.title,icon:'✅',type:'ms'}));
+  notes.forEach(n=>items.push({date:n.date||n.createdAt?.slice(0,10),label:n.title,icon:'📓',type:'note'}));
+  dataItems.forEach(d=>items.push({date:d.date,label:d.title,icon:'📎',type:'data'}));
+  items.sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  const tl=document.getElementById('timeline');
+  if(!items.length){tl.innerHTML='<div style="padding:20px 16px;font-size:12px;color:var(--text2)">타임라인 항목이 없습니다. 마일스톤을 달성하거나 노트를 작성해보세요.</div>';return}
+  tl.innerHTML=items.map(item=>`<div class="tl-item">
+    <div class="tl-dot${item.type==='ms'?' done':''}">${item.icon}</div>
+    <div class="tl-label">${escHtml(item.label)}</div>
+    <div class="tl-date">${item.date||''}</div>
+  </div>`).join('<div style="flex:0 0 30px"></div>');
+}
+
+// Goal
+function editGoal(){
+  const g=getData('goal',{text:''});
+  document.getElementById('goalInput').value=g.text||'';
+  document.getElementById('goalModal').classList.add('open');
+}
+function saveGoal(){
+  const text=document.getElementById('goalInput').value.trim();
+  const g=getData('goal',{text:'',history:[]});
+  if(g.text&&g.text!==text){
+    if(!g.history)g.history=[];
+    g.history.unshift({text:g.text,savedAt:new Date().toISOString()});
+    if(g.history.length>10)g.history=g.history.slice(0,10);
+  }
+  g.text=text;setData('goal',g);
+  closeModal('goalModal');renderGoal();
+}
+function renderGoal(){
+  const g=getData('goal',{text:'',history:[]});
+  document.getElementById('goalText').textContent=g.text||'연구 목표가 없습니다. 수정 버튼을 눌러 추가해보세요.';
+  const hist=g.history||[];
+  const histEl=document.getElementById('goalHistory');
+  if(hist.length){
+    histEl.style.display='';
+    document.getElementById('goalHistoryList').innerHTML=hist.map(h=>`<div class="goal-history-item">${new Date(h.savedAt).toLocaleDateString('ko-KR')} — ${escHtml(h.text.slice(0,80))}${h.text.length>80?'...':''}</div>`).join('');
+  }else{histEl.style.display='none'}
+}
+
+// ────────────────────────────────────────────────
+// TAB 2: Notes
+// ────────────────────────────────────────────────
+let noteTagFilter=null;
+let noteAttachments=[];
+
+function openNoteModal(id=null){
+  noteAttachments=[];
+  document.getElementById('noteEditId').value=id||'';
+  document.getElementById('noteModalTitle').textContent=id?'📓 노트 수정':'📓 새 노트 작성';
+  document.getElementById('noteAttachPreview').innerHTML='';
+  if(id){
+    const n=getData('notes',[]).find(x=>x.id===id);
+    if(n){
+      document.getElementById('noteTitle').value=n.title||'';
+      document.getElementById('noteDate').value=n.date||'';
+      document.getElementById('noteTags').value=(n.tags||[]).join(', ');
+      document.getElementById('noteBody').value=n.body||'';
+      noteAttachments=n.attachments||[];
+      renderNoteAttachPreview();
+    }
+  }else{
+    document.getElementById('noteTitle').value='';
+    document.getElementById('noteDate').value=new Date().toISOString().slice(0,10);
+    document.getElementById('noteTags').value='';
+    document.getElementById('noteBody').value='';
+  }
+  document.getElementById('noteModal').classList.add('open');
+}
+
+function handleNoteFiles(input){
+  const files=Array.from(input.files);
+  files.forEach(f=>{
+    if(f.type.startsWith('image/')){
+      const reader=new FileReader();
+      reader.onload=e=>{noteAttachments.push({type:'image',name:f.name,data:e.target.result});renderNoteAttachPreview()};
+      reader.readAsDataURL(f);
+    }else{
+      noteAttachments.push({type:'file',name:f.name,size:f.size});renderNoteAttachPreview();
+    }
+  });
+}
+function renderNoteAttachPreview(){
+  document.getElementById('noteAttachPreview').innerHTML=noteAttachments.map((a,i)=>{
+    if(a.type==='image')return`<img class="attach-thumb" src="${a.data}" title="${escHtml(a.name)}" onerror="this.style.display='none'">`;
+    return`<div class="attach-file"><span>📄</span>${escHtml(a.name.slice(0,10))}</div>`;
+  }).join('');
+}
+
+function saveNote(){
+  const title=document.getElementById('noteTitle').value.trim();
+  if(!title){alert('제목을 입력해주세요');return}
+  const notes=getData('notes',[]);
+  const editId=document.getElementById('noteEditId').value;
+  const obj={
+    id:editId||uid(),title,
+    date:document.getElementById('noteDate').value,
+    tags:document.getElementById('noteTags').value.split(',').map(t=>t.trim().replace(/^#/,'')).filter(Boolean),
+    body:document.getElementById('noteBody').value,
+    attachments:noteAttachments,
+    createdAt:editId?(notes.find(n=>n.id===editId)||{}).createdAt||new Date().toISOString():new Date().toISOString()
+  };
+  if(editId){const i=notes.findIndex(n=>n.id===editId);if(i>=0)notes[i]=obj;else notes.unshift(obj)}
+  else notes.unshift(obj);
+  setData('notes',notes);closeModal('noteModal');renderNotes();renderTimeline();
+}
+
+function deleteNote(id){
+  if(!confirm('노트를 삭제하시겠습니까?'))return;
+  setData('notes',getData('notes',[]).filter(n=>n.id!==id));
+  renderNotes();renderTimeline();
+}
+
+function openNoteDetail(id){
+  const n=getData('notes',[]).find(x=>x.id===id);if(!n)return;
+  const attachHtml=n.attachments?.length?`<div class="attach-list">${n.attachments.map(a=>{
+    if(a.type==='image')return`<img class="attach-thumb" src="${a.data}" title="${escHtml(a.name)}">`;
+    return`<div class="attach-file"><span>📄</span>${escHtml(a.name.slice(0,10))}</div>`;
+  }).join('')}</div>`:'';
+  document.getElementById('noteDetailContent').innerHTML=`
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px">
+      <h3 style="font-size:18px;font-weight:800;flex:1">${escHtml(n.title)}</h3>
+      <button class="btn btn-secondary btn-xs" onclick="closeModal('noteDetailModal');openNoteModal('${id}')">✏️ 수정</button>
+    </div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:8px">${fmtDate(n.date)} ${n.tags?.length?'· '+n.tags.map(t=>`<span class="tag">#${escHtml(t)}</span>`).join(' '):''}</div>
+    <div class="note-full-body">${escHtml(n.body)}</div>
+    ${attachHtml}`;
+  document.getElementById('noteDetailModal').classList.add('open');
+}
+
+function renderNotes(){
+  const notes=getData('notes',[]);
+  const q=(document.getElementById('noteSearch')?.value||'').toLowerCase();
+  // Collect all tags
+  const allTags=[...new Set(notes.flatMap(n=>n.tags||[]))];
+  document.getElementById('noteTagFilters').innerHTML=
+    `<button class="tag-filter${!noteTagFilter?' active':''}" onclick="setNoteTagFilter(null)">전체</button>`+
+    allTags.map(t=>`<button class="tag-filter${noteTagFilter===t?' active':''}" onclick="setNoteTagFilter('${escHtml(t)}')">#${escHtml(t)}</button>`).join('');
+  let filtered=notes;
+  if(noteTagFilter)filtered=filtered.filter(n=>(n.tags||[]).includes(noteTagFilter));
+  if(q)filtered=filtered.filter(n=>(n.title+n.body).toLowerCase().includes(q));
+  const list=document.getElementById('notesList');
+  if(!filtered.length){list.innerHTML='<div class="empty-state"><div class="es-icon">📓</div><p>노트가 없습니다.</p></div>';return}
+  list.innerHTML=filtered.map(n=>`<div class="note-item" onclick="openNoteDetail('${n.id}')">
+    <div class="note-item-header">
+      <div class="note-item-title">${escHtml(n.title)}</div>
+      <div class="note-item-date">${fmtDate(n.date)}</div>
+      <button class="btn btn-danger btn-xs" onclick="event.stopPropagation();deleteNote('${n.id}')">삭제</button>
+    </div>
+    <div class="note-item-preview">${escHtml((n.body||'').slice(0,100))}</div>
+    <div class="note-item-tags">${(n.tags||[]).map(t=>`<span class="tag">#${escHtml(t)}</span>`).join('')}</div>
+  </div>`).join('');
+}
+function setNoteTagFilter(t){noteTagFilter=t;renderNotes()}
+
+// ────────────────────────────────────────────────
+// TAB 3: Experiment Data
+// ────────────────────────────────────────────────
+const DATA_TYPES={
+  table:{label:'수치 데이터',icon:'📊'},
+  chart:{label:'그래프',icon:'🌡️'},
+  code:{label:'코드',icon:'💻'},
+  image:{label:'이미지',icon:'🖼️'},
+  csv:{label:'CSV',icon:'📄'},
+  text:{label:'자유형식',icon:'📝'}
+};
+let chartInstance=null;
+
+function openDataModal(type){
+  document.getElementById('dataModalType').value=type;
+  document.getElementById('dataModalTitle').textContent=DATA_TYPES[type].icon+' '+DATA_TYPES[type].label+' 추가';
+  document.getElementById('dataTitle').value='';
+  document.getElementById('dataDate').value=new Date().toISOString().slice(0,10);
+  document.getElementById('dataDesc').value='';
+  document.getElementById('dataTypeInput').innerHTML=buildDataTypeInput(type);
+  document.getElementById('dataModal').classList.add('open');
+}
+
+function buildDataTypeInput(type){
+  if(type==='table')return`
+    <div class="form-group"><label>컬럼 이름 (쉼표로 구분)</label><input id="tblCols" placeholder="시간, 온도, 압력" oninput="buildTable()"/></div>
+    <div class="form-group"><label>데이터</label><div id="tblContainer"></div>
+    <div class="table-input-row-add" onclick="addTableRow()">+ 행 추가</div></div>`;
+  if(type==='chart')return`
+    <div class="form-group"><label>X축 레이블 (쉼표 구분)</label><input id="chartLabels" placeholder="0, 10, 20, 30, 40"/></div>
+    <div class="form-group"><label>Y축 값 (쉼표 구분)</label><input id="chartValues" placeholder="1.2, 2.5, 3.1, 2.8, 4.0"/></div>
+    <div class="form-group"><label>차트 유형</label><select id="chartType"><option value="line">꺾은선</option><option value="bar">막대</option><option value="scatter">산점도</option></select></div>`;
+  if(type==='code')return`
+    <div class="form-group"><label>언어</label><select id="codeLang"><option>Python</option><option>JavaScript</option><option>MATLAB</option><option>C/C++</option><option>R</option><option>Julia</option><option>Other</option></select></div>
+    <div class="form-group"><label>코드</label><textarea id="codeContent" rows="8" style="font-family:monospace;font-size:12px" placeholder="코드를 입력하세요..."></textarea></div>`;
+  if(type==='image')return`
+    <div class="form-group"><label>이미지 업로드</label><input type="file" id="imgFile" accept="image/*" onchange="previewImg(this)"/><div id="imgPreview" style="margin-top:8px"></div></div>`;
+  if(type==='csv')return`
+    <div class="form-group"><label>CSV 파일 업로드</label><input type="file" id="csvFile" accept=".csv,.tsv" onchange="loadCsv(this)"/></div>
+    <div id="csvPreview"></div>`;
+  if(type==='text')return`
+    <div class="form-group"><label>내용</label><textarea id="textContent" rows="6" placeholder="자유롭게 기록하세요..."></textarea></div>`;
+  return'';
+}
+
+let tableRows=2;
+function buildTable(){
+  const cols=document.getElementById('tblCols').value.split(',').map(c=>c.trim()).filter(Boolean);
+  if(!cols.length)return;
+  const container=document.getElementById('tblContainer');
+  let html=`<table class="table-input"><thead><tr>${cols.map(c=>`<th>${escHtml(c)}</th>`).join('')}</tr></thead><tbody>`;
+  for(let r=0;r<tableRows;r++){
+    html+=`<tr>${cols.map(()=>`<td><input type="text" placeholder="값"/></td>`).join('')}</tr>`;
+  }
+  html+='</tbody></table>';
+  container.innerHTML=html;
+}
+function addTableRow(){
+  const t=document.querySelector('#tblContainer table');
+  if(!t)return;
+  const cols=t.querySelectorAll('th').length;
+  const tr=document.createElement('tr');
+  for(let i=0;i<cols;i++){const td=document.createElement('td');const inp=document.createElement('input');inp.type='text';inp.placeholder='값';td.appendChild(inp);tr.appendChild(td);}
+  t.querySelector('tbody').appendChild(tr);
+}
+
+let _imgData=null;
+function previewImg(input){
+  const f=input.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=e=>{_imgData=e.target.result;document.getElementById('imgPreview').innerHTML=`<img src="${e.target.result}" style="max-height:150px;border-radius:8px">`};
+  reader.readAsDataURL(f);
+}
+let _csvData=null;
+function loadCsv(input){
+  const f=input.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    _csvData=e.target.result;
+    const lines=_csvData.split('\n').slice(0,6);
+    document.getElementById('csvPreview').innerHTML=`<div style="overflow-x:auto;margin-top:8px"><table class="data-table">${lines.map((l,i)=>`<tr>${l.split(',').map(c=>`<${i===0?'th':'td'}>${escHtml(c.trim())}</${i===0?'th':'td'}>`).join('')}</tr>`).join('')}</table></div>`;
+  };
+  reader.readAsText(f);
+}
+
+function saveData(){
+  const title=document.getElementById('dataTitle').value.trim();
+  if(!title){alert('제목을 입력해주세요');return}
+  const type=document.getElementById('dataModalType').value;
+  let content={};
+  if(type==='table'){
+    const cols=document.getElementById('tblCols').value.split(',').map(c=>c.trim()).filter(Boolean);
+    const rows=[];
+    document.querySelectorAll('#tblContainer tbody tr').forEach(tr=>{
+      const row=[];tr.querySelectorAll('input').forEach(inp=>row.push(inp.value));rows.push(row);
+    });
+    content={cols,rows};
+  }else if(type==='chart'){
+    content={labels:document.getElementById('chartLabels').value,values:document.getElementById('chartValues').value,chartType:document.getElementById('chartType').value};
+  }else if(type==='code'){
+    content={lang:document.getElementById('codeLang').value,code:document.getElementById('codeContent').value};
+  }else if(type==='image'){
+    content={data:_imgData};_imgData=null;
+  }else if(type==='csv'){
+    content={csv:_csvData};_csvData=null;
+  }else if(type==='text'){
+    content={text:document.getElementById('textContent').value};
+  }
+  const items=getData('data',[]);
+  items.unshift({id:uid(),title,type,date:document.getElementById('dataDate').value,desc:document.getElementById('dataDesc').value,content,createdAt:new Date().toISOString()});
+  setData('data',items);closeModal('dataModal');renderDataList();renderTimeline();
+}
+
+function deleteDataItem(id){
+  if(!confirm('삭제하시겠습니까?'))return;
+  setData('data',getData('data',[]).filter(d=>d.id!==id));renderDataList();renderTimeline();
+}
+
+function openDataDetail(id){
+  const d=getData('data',[]).find(x=>x.id===id);if(!d)return;
+  const t=DATA_TYPES[d.type]||{icon:'📎',label:'데이터'};
+  let bodyHtml='';
+  if(d.type==='table'&&d.content?.cols){
+    bodyHtml=`<div style="overflow-x:auto"><table class="data-table"><thead><tr>${d.content.cols.map(c=>`<th>${escHtml(c)}</th>`).join('')}</tr></thead><tbody>${(d.content.rows||[]).map(r=>`<tr>${r.map(c=>`<td>${escHtml(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  }else if(d.type==='chart'){
+    const canvasId='detailChart'+Date.now();
+    bodyHtml=`<div class="chart-wrap"><canvas id="${canvasId}"></canvas></div>`;
+    setTimeout(()=>{
+      const labels=(d.content.labels||'').split(',').map(l=>l.trim());
+      const values=(d.content.values||'').split(',').map(v=>parseFloat(v.trim())||0);
+      const ctx=document.getElementById(canvasId);
+      if(ctx&&window.Chart){if(chartInstance)chartInstance.destroy();
+        chartInstance=new Chart(ctx,{type:d.content.chartType||'line',data:{labels,datasets:[{label:d.title,data:values,borderColor:'rgba(var(--accent),1)',backgroundColor:'rgba(255,183,197,.2)',tension:.3}]},options:{responsive:true,plugins:{legend:{display:false}}}});
+      }
+    },100);
+  }else if(d.type==='code'){
+    bodyHtml=`<div class="code-block-wrap"><pre class="code-block">${escHtml(d.content.code||'')}</pre><div class="code-lang-badge">${escHtml(d.content.lang||'')}</div></div>`;
+  }else if(d.type==='image'&&d.content?.data){
+    bodyHtml=`<img src="${d.content.data}" style="max-width:100%;border-radius:8px;margin-top:8px">`;
+  }else if(d.type==='csv'&&d.content?.csv){
+    const lines=(d.content.csv||'').split('\n').slice(0,20);
+    bodyHtml=`<div style="overflow-x:auto"><table class="data-table">${lines.map((l,i)=>`<tr>${l.split(',').map(c=>`<${i===0?'th':'td'}>${escHtml(c.trim())}</${i===0?'th':'td'}>`).join('')}</tr>`).join('')}</table></div>`;
+  }else if(d.type==='text'){
+    bodyHtml=`<div style="white-space:pre-wrap;font-size:13px;line-height:1.7">${escHtml(d.content.text||'')}</div>`;
+  }
+  document.getElementById('dataDetailContent').innerHTML=`
+    <h3 style="font-size:17px;font-weight:800;margin-bottom:6px">${t.icon} ${escHtml(d.title)}</h3>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:10px">${fmtDate(d.date)} ${d.desc?'· '+escHtml(d.desc):''}</div>
+    ${bodyHtml}`;
+  document.getElementById('dataDetailModal').classList.add('open');
+}
+
+function renderDataList(){
+  const items=getData('data',[]);
+  const list=document.getElementById('dataList');
+  if(!items.length){list.innerHTML='<div class="empty-state"><div class="es-icon">🧪</div><p>데이터가 없습니다. 위 버튼으로 추가해보세요.</p></div>';return}
+  list.innerHTML=items.map(d=>{
+    const t=DATA_TYPES[d.type]||{icon:'📎',label:'데이터'};
+    return`<div class="data-item" onclick="openDataDetail('${d.id}')">
+      <div class="data-icon">${t.icon}</div>
+      <div class="data-meta">
+        <div class="data-title">${escHtml(d.title)}</div>
+        <div class="data-desc">${escHtml(d.desc||'')}</div>
+        <div class="data-date">${fmtDate(d.date)} · ${t.label}</div>
+      </div>
+      <div class="data-actions">
+        <button class="btn btn-danger btn-xs" onclick="event.stopPropagation();deleteDataItem('${d.id}')">삭제</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ────────────────────────────────────────────────
+// TAB 4: TODO
+// ────────────────────────────────────────────────
+let todoFilter='all';
+
+document.querySelectorAll('#todoSubTabs .todo-sub-tab').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('#todoSubTabs .todo-sub-tab').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');todoFilter=btn.dataset.filter;renderTodoItems();
+  };
+});
+
+function addTodoItem(){
+  const title=document.getElementById('tdTitle').value.trim();
+  if(!title){alert('할 일을 입력해주세요');return}
+  const items=getData('todos',[]);
+  items.push({id:uid(),title,prio:document.getElementById('tdPrio').value,cat:document.getElementById('tdCat').value,due:document.getElementById('tdDue').value,done:false,doneAt:null,createdAt:new Date().toISOString()});
+  setData('todos',items);document.getElementById('tdTitle').value='';document.getElementById('tdDue').value='';
+  renderTodoItems();
+}
+function toggleTodoItem(id){
+  const items=getData('todos',[]);
+  const t=items.find(x=>x.id===id);if(!t)return;
+  t.done=!t.done;t.doneAt=t.done?new Date().toISOString().slice(0,10):null;
+  setData('todos',items);renderTodoItems();
+}
+function deleteTodoItem(id){
+  if(!confirm('삭제하시겠습니까?'))return;
+  setData('todos',getData('todos',[]).filter(t=>t.id!==id));renderTodoItems();
+}
+function renderTodoItems(){
+  const allItems=getData('todos',[]);
+  const now=new Date();
+  let items=allItems;
+  if(todoFilter==='week'){
+    const weekEnd=new Date(now);weekEnd.setDate(weekEnd.getDate()+7);
+    items=allItems.filter(t=>!t.done&&t.due&&new Date(t.due)<=weekEnd);
+  }else if(todoFilter==='month'){
+    items=allItems.filter(t=>!t.done&&t.due&&new Date(t.due).getMonth()===now.getMonth()&&new Date(t.due).getFullYear()===now.getFullYear());
+  }
+  const total=allItems.length,done=allItems.filter(t=>t.done).length;
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('todoProgFill').style.width=pct+'%';
+  document.getElementById('todoProgText').textContent=`${done} / ${total} 완료 (${pct}%)`;
+  const list=document.getElementById('todoItems');
+  if(!items.length){list.innerHTML='<div class="empty-state"><div class="es-icon">✅</div><p>할 일이 없습니다.</p></div>';return}
+  const prioOrder={high:0,mid:1,low:2};
+  items.sort((a,b)=>{if(a.done!==b.done)return a.done?1:-1;return(prioOrder[a.prio]||1)-(prioOrder[b.prio]||1)});
+  const prioBadge={high:`<span class="prio-badge prio-high">🔴 높음</span>`,mid:`<span class="prio-badge prio-mid">🟡 중간</span>`,low:`<span class="prio-badge prio-low">🟢 낮음</span>`};
+  const overdue=t=>t.due&&!t.done&&new Date(t.due)<now;
+  list.innerHTML=items.map(t=>`<div class="todo-row${t.done?' done-row':''}">
+    <input type="checkbox"${t.done?' checked':''} onchange="toggleTodoItem('${t.id}')">
+    <span class="todo-row-title" style="${overdue(t)?'color:#dc2626':''}">${escHtml(t.title)}${t.doneAt?` <span style="font-size:10px;font-weight:400;color:var(--text2)">(${t.doneAt})</span>`:''}</span>
+    ${prioBadge[t.prio]||''}
+    <span class="cat-badge">${escHtml(t.cat)}</span>
+    ${t.due?`<span class="todo-due" style="${overdue(t)?'color:#dc2626;font-weight:700':''}">${fmtDate(t.due)}</span>`:''}
+    <button class="btn btn-danger btn-xs" onclick="deleteTodoItem('${t.id}')">삭제</button>
+  </div>`).join('');
+}
+
+// ────────────────────────────────────────────────
+// TAB 5: Papers
+// ────────────────────────────────────────────────
+function renderKwChips(){
+  const p=getProj();
+  const kws=p?.keywords||[];
+  document.getElementById('kwChips').innerHTML=kws.map(k=>
+    `<div class="kw-chip" onclick="document.getElementById('paperSearchInput').value='${escHtml(k)}';searchPapers()">${escHtml(k)}</div>`
+  ).join('');
+}
+
+async function searchPapers(){
+  const q=document.getElementById('paperSearchInput').value.trim();
+  if(!q){alert('검색어를 입력해주세요');return}
+  const res=document.getElementById('paperResults');
+  res.innerHTML='<div class="loading"><div class="spinner"></div>검색 중...</div>';
+  try{
+    const papers=await fetchArxiv(q);
+    if(!papers.length){res.innerHTML='<div class="empty-state"><div class="es-icon">🔍</div><p>검색 결과가 없습니다.</p></div>';return}
+    res.innerHTML=papers.map(p=>`<div class="paper-card">
+      <div class="paper-title"><a href="${escHtml(p.url)}" target="_blank">${escHtml(p.title)}</a></div>
+      <div class="paper-meta">${escHtml(p.authors)} · ${p.date}</div>
+      <div class="paper-abstract">${escHtml(p.abstract)}</div>
+      <div class="paper-actions">
+        <button class="btn btn-secondary btn-xs" onclick="addRefFromSearch(${JSON.stringify({title:p.title,authors:p.authors,year:p.date?.slice(0,4)||'',source:p.url,abstract:p.abstract}).replace(/"/g,'&quot;')})">+ 참고문헌 추가</button>
+        <a href="${escHtml(p.url)}" target="_blank" class="btn btn-outline btn-xs">원문 보기</a>
+      </div>
+    </div>`).join('');
+  }catch(e){
+    res.innerHTML=`<div class="empty-state"><div class="es-icon">⚠️</div><p>검색 실패: ${escHtml(e.message)}</p></div>`;
+  }
+}
+
+async function fetchArxiv(q){
+  try{
+    const encoded=encodeURIComponent(`https://export.arxiv.org/api/query?search_query=all:${encodeURIComponent(q)}&start=0&max_results=10`);
+    const resp=await fetch('https://corsproxy.io/?'+encoded);
+    if(!resp.ok)throw new Error('proxy failed');
+    const text=await resp.text();
+    const xml=new DOMParser().parseFromString(text,'application/xml');
+    const entries=xml.querySelectorAll('entry');
+    if(!entries.length)throw new Error('no results');
+    return Array.from(entries).map(e=>({
+      title:e.querySelector('title')?.textContent?.trim()||'',
+      authors:Array.from(e.querySelectorAll('author name')).map(a=>a.textContent).join(', '),
+      abstract:e.querySelector('summary')?.textContent?.trim()||'',
+      date:e.querySelector('published')?.textContent?.slice(0,10)||'',
+      url:e.querySelector('id')?.textContent?.trim()||''
+    }));
+  }catch(e){
+    return fetchSemanticScholar(q);
+  }
+}
+
+async function fetchSemanticScholar(q){
+  const url=`https://api.semanticscholar.org/graph/v1/paper/search?query=${encodeURIComponent(q)}&limit=10&fields=title,authors,year,abstract,url,externalIds`;
+  const resp=await fetch(url);if(!resp.ok)throw new Error('Semantic Scholar 검색 실패');
+  const data=await resp.json();
+  return(data.data||[]).map(p=>({
+    title:p.title||'',
+    authors:(p.authors||[]).map(a=>a.name).join(', '),
+    abstract:p.abstract||'',
+    date:p.year?String(p.year):'',
+    url:p.url||`https://www.semanticscholar.org/paper/${p.paperId}`
+  }));
+}
+
+function addRefFromSearch(paper){
+  const refs=getData('refs',[]);
+  refs.push({id:uid(),title:paper.title,authors:paper.authors,year:paper.year,source:paper.source,abstract:paper.abstract,addedAt:new Date().toISOString()});
+  setData('refs',refs);renderRefs();
+  alert('참고문헌에 추가했습니다!');
+}
+function openManualRefModal(){
+  ['refTitle','refAuthors','refSource','refAbstract'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('refYear').value='';
+  document.getElementById('refModal').classList.add('open');
+}
+function saveRef(){
+  const title=document.getElementById('refTitle').value.trim();
+  if(!title){alert('제목을 입력해주세요');return}
+  const refs=getData('refs',[]);
+  refs.push({id:uid(),title,authors:document.getElementById('refAuthors').value,year:document.getElementById('refYear').value,source:document.getElementById('refSource').value,abstract:document.getElementById('refAbstract').value,addedAt:new Date().toISOString()});
+  setData('refs',refs);closeModal('refModal');renderRefs();
+}
+function deleteRef(id){
+  if(!confirm('참고문헌을 삭제하시겠습니까?'))return;
+  setData('refs',getData('refs',[]).filter(r=>r.id!==id));renderRefs();
+}
+function renderRefs(){
+  const refs=getData('refs',[]);
+  const list=document.getElementById('refsList');
+  if(!refs.length){list.innerHTML='<div class="empty-state"><div class="es-icon">📚</div><p>참고문헌이 없습니다.</p></div>';return}
+  list.innerHTML=refs.map((r,i)=>`<div class="ref-item">
+    <div class="ref-number">[${i+1}]</div>
+    <div class="ref-content">
+      <div class="ref-title">${escHtml(r.title)}</div>
+      <div class="ref-authors">${[r.authors,r.year,r.source].filter(Boolean).join(' · ')}</div>
+      ${r.abstract?`<div style="font-size:10px;color:var(--text2);margin-top:3px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${escHtml(r.abstract)}</div>`:''}
+    </div>
+    <button class="ref-del" onclick="deleteRef('${r.id}')">✕</button>
+  </div>`).join('');
+}
+function exportRefs(){
+  const refs=getData('refs',[]);
+  if(!refs.length){alert('참고문헌이 없습니다');return}
+  const text=refs.map((r,i)=>`[${i+1}] ${r.authors?r.authors+'. ':''}${r.title}${r.year?'. ('+r.year+')':''}${r.source?'. '+r.source:''}`).join('\n');
+  const blob=new Blob([text],{type:'text/plain'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='references.txt';a.click();
+}
+
+// ── Init
+initHeader();updateProgress();renderMilestones();renderTimeline();renderGoal();
+renderNotes();renderDataList();renderTodoItems();renderRefs();renderKwChips();
+</script>
+</body>
+</html>
