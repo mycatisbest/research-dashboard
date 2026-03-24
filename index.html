@@ -3,105 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI 연구 관리 대시보드 — 마이크로플루이딕 유도가열</title>
+<title>AI 연구 관리 대시보드</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-/* ═══════════════════════════════════════════
-   SEASONAL THEME VARIABLES
-═══════════════════════════════════════════ */
-:root {
-  /* Spring default — overridden by JS */
-  --bg1: #fff0f5; --bg2: #f8ffe0;
-  --accent: #ffb7c5; --accent2: #b5e48c;
-  --accent-dark: #e8829a; --accent-light: #ffe4ec;
-  --season-icon: "🌸";
-  --card: #ffffff;
-  --text: #2d3148;
-  --text2: #6b7194;
-  --border: #ede8f0;
-  --sh: 0 4px 20px rgba(255,183,197,.15);
-  --sh-h: 0 8px 32px rgba(255,183,197,.28);
-  --r: 16px;
-  --r-sm: 10px;
-  --hdr-g: linear-gradient(135deg,#ffb7c5 0%,#ffd6e0 40%,#b5e48c 100%);
-}
-body.spring { --bg1:#fff0f5;--bg2:#f8ffe0;--accent:#ffb7c5;--accent2:#b5e48c;--accent-dark:#e8829a;--accent-light:#ffe4ec;--hdr-g:linear-gradient(135deg,#ffb7c5 0%,#ffc8d4 40%,#c9f291 100%); }
-body.summer { --bg1:#f0f9ff;--bg2:#e0fff8;--accent:#48cae4;--accent2:#00b4d8;--accent-dark:#0096c7;--accent-light:#caf0f8;--hdr-g:linear-gradient(135deg,#48cae4 0%,#00b4d8 50%,#90e0ef 100%); }
-body.autumn { --bg1:#fff8f0;--bg2:#fff3e0;--accent:#e07a2f;--accent2:#f4a261;--accent-dark:#c45e10;--accent-light:#fde8d0;--hdr-g:linear-gradient(135deg,#e07a2f 0%,#f4a261 50%,#ffcc80 100%); }
-body.winter { --bg1:#f0f2ff;--bg2:#e8eaf6;--accent:#7986cb;--accent2:#5c6bc0;--accent-dark:#3f51b5;--accent-light:#e8eaf6;--hdr-g:linear-gradient(135deg,#7986cb 0%,#5c6bc0 50%,#9fa8da 100%); }
-
+/* ══ SEASON THEME ══ */
+:root{--bg1:#fff0f5;--bg2:#f8ffe0;--accent:#ffb7c5;--accent2:#b5e48c;--accent-dark:#e8829a;--accent-light:#ffe4ec;--card:#fff;--text:#2d3148;--text2:#6b7194;--border:#ede8f0;--sh:0 4px 20px rgba(255,183,197,.15);--sh-h:0 8px 32px rgba(255,183,197,.28);--r:16px;--hdr-g:linear-gradient(135deg,#ffb7c5 0%,#ffd6e0 40%,#b5e48c 100%)}
+body.spring{--bg1:#fff0f5;--bg2:#f8ffe0;--accent:#ffb7c5;--accent2:#b5e48c;--accent-dark:#e8829a;--accent-light:#ffe4ec;--hdr-g:linear-gradient(135deg,#ffb7c5 0%,#ffc8d4 40%,#c9f291 100%)}
+body.summer{--bg1:#f0f9ff;--bg2:#e0fff8;--accent:#48cae4;--accent2:#00b4d8;--accent-dark:#0096c7;--accent-light:#caf0f8;--hdr-g:linear-gradient(135deg,#48cae4 0%,#00b4d8 50%,#90e0ef 100%)}
+body.autumn{--bg1:#fff8f0;--bg2:#fff3e0;--accent:#e07a2f;--accent2:#f4a261;--accent-dark:#c45e10;--accent-light:#fde8d0;--hdr-g:linear-gradient(135deg,#e07a2f 0%,#f4a261 50%,#ffcc80 100%)}
+body.winter{--bg1:#f0f2ff;--bg2:#e8eaf6;--accent:#7986cb;--accent2:#5c6bc0;--accent-dark:#3f51b5;--accent-light:#e8eaf6;--hdr-g:linear-gradient(135deg,#7986cb 0%,#5c6bc0 50%,#9fa8da 100%)}
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:linear-gradient(160deg,var(--bg1) 0%,var(--bg2) 100%);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;min-height:100vh;min-height:100dvh}
+body{background:linear-gradient(160deg,var(--bg1) 0%,var(--bg2) 100%);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;min-height:100vh}
 
-/* ═══════════════════════════════════════════ HEADER */
-header {
-  background: var(--hdr-g);
-  padding: 28px 36px 22px;
-  position: relative; overflow: hidden;
-}
+/* ══ PROJECT SCREEN ══ */
+#psScreen{min-height:100vh;padding:60px 24px 40px;background:linear-gradient(160deg,var(--bg1) 0%,var(--bg2) 100%)}
+.ps-header{text-align:center;margin-bottom:48px}
+.ps-season{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#fff;font-size:14px;font-weight:700;padding:8px 20px;border-radius:40px;margin-bottom:16px}
+.ps-header h1{font-size:34px;font-weight:800;color:var(--text);margin-bottom:8px}
+.ps-header p{font-size:14px;color:var(--text2)}
+.ps-date{font-size:12px;color:var(--text2);font-weight:600;margin-top:4px}
+.ps-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;max-width:1200px;margin:0 auto}
+.ps-card{background:#fff;border-radius:20px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,.08);cursor:pointer;transition:.2s;border:1px solid var(--border);border-top:4px solid #ccc;position:relative}
+.ps-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,.14)}
+.ps-card-ctrl{position:absolute;top:14px;right:14px;display:flex;gap:4px;opacity:0;transition:.15s}
+.ps-card:hover .ps-card-ctrl{opacity:1}
+.ps-ctrl-btn{background:rgba(0,0,0,.07);border:none;border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:13px;transition:.15s;display:flex;align-items:center;justify-content:center}
+.ps-ctrl-btn:hover{background:rgba(0,0,0,.18)}
+.ps-card-name{font-size:18px;font-weight:800;color:var(--text);margin-bottom:6px;padding-right:64px;line-height:1.3}
+.ps-card-desc{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:10px;min-height:32px}
+.ps-card-kw{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px}
+.ps-kw-tag{font-size:10px;background:var(--accent-light);color:var(--accent-dark);padding:3px 8px;border-radius:20px;font-weight:600}
+.ps-card-date{font-size:10px;color:var(--text2);margin-bottom:14px}
+.ps-card-new{border:2px dashed var(--border)!important;border-top:2px dashed var(--border)!important;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:180px;color:var(--text2);gap:10px;font-weight:600;font-size:14px}
+.ps-card-new:hover{border-color:var(--accent)!important;color:var(--accent-dark);background:var(--accent-light)}
+.ps-new-icon{font-size:32px;line-height:1}
+
+/* ══ HEADER ══ */
+header{background:var(--hdr-g);padding:24px 32px 20px;position:relative;overflow:hidden}
 header::before{content:'';position:absolute;top:-60px;right:-40px;width:240px;height:240px;border-radius:50%;background:rgba(255,255,255,.1)}
 header::after{content:'';position:absolute;bottom:-80px;left:35%;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.07)}
 .hc{position:relative;z-index:1}
 .h-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
 .h-left .h-sub{font-size:11px;font-weight:700;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:5px}
 .h-left .h-title{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.3px;line-height:1.3}
-.h-right{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.h-right{display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
 .season-badge{background:rgba(255,255,255,.25);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.3);border-radius:40px;padding:6px 14px;font-size:13px;color:#fff;font-weight:600;display:flex;align-items:center;gap:6px}
 .today-badge{background:rgba(255,255,255,.2);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.25);border-radius:40px;padding:6px 14px;font-size:12px;color:#fff;font-weight:600}
-.h-btn{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:7px 10px;color:#fff;cursor:pointer;font-size:16px;backdrop-filter:blur(4px);transition:.2s}
-.h-btn:hover{background:rgba(255,255,255,.35)}
-.h-progress{margin-top:18px}
-.h-progress-label{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.8);font-weight:600;margin-bottom:6px}
-.h-progress-bar{height:8px;background:rgba(255,255,255,.25);border-radius:4px;overflow:hidden}
+.h-btn{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 12px;color:#fff;cursor:pointer;font-size:12px;font-weight:600;backdrop-filter:blur(4px);transition:.2s}
+.h-btn:hover{background:rgba(255,255,255,.38)}
+.h-progress{margin-top:14px}
+.h-progress-label{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.8);font-weight:600;margin-bottom:5px}
+.h-progress-bar{height:7px;background:rgba(255,255,255,.25);border-radius:4px;overflow:hidden}
 .h-progress-fill{height:100%;background:#fff;border-radius:4px;transition:width .6s ease}
 
-/* ═══════════════════════════════════════════ LAYOUT */
-.dash{display:grid;grid-template-columns:340px 1fr 340px;gap:18px;padding:22px 22px 40px;max-width:1600px;margin:0 auto}
+/* ══ LAYOUT ══ */
+.dash{display:grid;grid-template-columns:340px 1fr 340px;gap:18px;padding:20px 20px 40px;max-width:1600px;margin:0 auto}
 @media(max-width:1280px){.dash{grid-template-columns:1fr 1fr}}
 @media(max-width:860px){.dash{grid-template-columns:1fr}}
 .col{display:flex;flex-direction:column;gap:18px}
-.span2{grid-column:span 2}
-.span3{grid-column:span 3}
+.span2{grid-column:span 2}.span3{grid-column:span 3}
+@media(max-width:1280px){.span3{grid-column:span 2}}
+@media(max-width:860px){.span3{grid-column:span 1}}
 
-/* ═══════════════════════════════════════════ CARD */
+/* ══ CARD ══ */
 .card{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--border);overflow:hidden;transition:box-shadow .2s}
 .card:hover{box-shadow:var(--sh-h)}
 .card-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px 0}
 .card-title{font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:7px}
-.card-title .icon{font-size:16px}
 .card-actions{display:flex;gap:6px}
 .card-body{padding:14px 18px 18px}
 
-/* ═══════════════════════════════════════════ BUTTONS */
+/* ══ BUTTONS ══ */
 .btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:.15s;line-height:1}
-.btn-primary{background:var(--accent);color:#fff}
-.btn-primary:hover{background:var(--accent-dark)}
-.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}
-.btn-ghost:hover{background:var(--accent-light)}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent-dark)}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--border)}.btn-ghost:hover{background:var(--accent-light)}
 .btn-sm{padding:4px 10px;font-size:11px;border-radius:6px}
 .btn-xs{padding:3px 8px;font-size:10px;border-radius:5px}
-.btn-danger{background:#fee2e2;color:#dc2626}
-.btn-danger:hover{background:#fecaca}
-.btn-success{background:#d1fae5;color:#065f46}
-.btn-success:hover{background:#a7f3d0}
+.btn-danger{background:#fee2e2;color:#dc2626}.btn-danger:hover{background:#fecaca}
+.btn-success{background:#d1fae5;color:#065f46}.btn-success:hover{background:#a7f3d0}
 
-/* ═══════════════════════════════════════════ FORM ELEMENTS */
+/* ══ FORMS ══ */
 input,textarea,select{border:1px solid var(--border);border-radius:8px;padding:8px 11px;font-size:12px;color:var(--text);background:#fff;width:100%;font-family:inherit;outline:none;transition:.15s}
 input:focus,textarea:focus,select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
 textarea{resize:vertical;min-height:68px}
 label{font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px}
-.form-row{display:grid;gap:10px}
-.form-row.c2{grid-template-columns:1fr 1fr}
-.form-row.c3{grid-template-columns:1fr 1fr 1fr}
+.form-row{display:grid;gap:10px}.form-row.c2{grid-template-columns:1fr 1fr}.form-row.c3{grid-template-columns:1fr 1fr 1fr}
+.form-section-title{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.8px;padding:10px 0 6px;border-top:1px solid var(--border);margin-top:8px}
 
-/* ═══════════════════════════════════════════ CALENDAR */
+/* ══ COLOR PICKER ══ */
+.color-picker-row{display:flex;gap:8px;margin:6px 0 10px}
+.cp-dot{width:24px;height:24px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:.15s;flex-shrink:0}
+.cp-dot.active{border-color:var(--text);transform:scale(1.2)}
+
+/* ══ CALENDAR ══ */
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .cal-nav span{font-size:14px;font-weight:700}
 .cal-nav button{background:var(--accent-light);border:none;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:14px;color:var(--accent-dark);font-weight:700;transition:.15s}
 .cal-nav button:hover{background:var(--accent);color:#fff}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
 .cal-dow{text-align:center;font-size:10px;font-weight:700;color:var(--text2);padding:4px 0}
-.cal-cell{min-height:36px;border-radius:8px;padding:3px;cursor:pointer;position:relative;transition:.15s}
+.cal-cell{min-height:34px;border-radius:7px;padding:3px;cursor:pointer;position:relative;transition:.15s}
 .cal-cell:hover{background:var(--accent-light)}
 .cal-cell.today{background:var(--accent);color:#fff}
 .cal-cell.today .cal-dn{color:#fff}
@@ -109,112 +110,107 @@ label{font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bot
 .cal-dn{font-size:11px;font-weight:600;text-align:center;line-height:1}
 .cal-dots{display:flex;gap:2px;justify-content:center;flex-wrap:wrap;margin-top:2px}
 .cal-dot{width:5px;height:5px;border-radius:50%}
-.dot-blue{background:#3b82f6}
-.dot-green{background:#22c55e}
-.dot-orange{background:#f97316}
-
-/* ═══════════════════════════════════════════ EVENTS LIST */
-.event-list{display:flex;flex-direction:column;gap:5px;margin-top:10px;max-height:180px;overflow-y:auto}
+.dot-blue{background:#3b82f6}.dot-green{background:#22c55e}.dot-orange{background:#f97316}
+.event-list{display:flex;flex-direction:column;gap:5px;margin-top:10px;max-height:160px;overflow-y:auto}
 .event-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:8px;font-size:12px;background:var(--bg1,#fafafa)}
-.event-item .ev-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.event-item .ev-title{flex:1;font-weight:600}
-.event-item .ev-del{background:none;border:none;color:#ccc;cursor:pointer;font-size:14px;padding:0;line-height:1}
-.event-item .ev-del:hover{color:#ef4444}
+.ev-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ev-title{flex:1;font-weight:600}
+.ev-del{background:none;border:none;color:#ccc;cursor:pointer;font-size:14px;padding:0;line-height:1}
+.ev-del:hover{color:#ef4444}
 
-/* ═══════════════════════════════════════════ MEMO / POST-IT */
+/* ══ MEMO ══ */
 .memo-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
 .memo-card{border-radius:10px;padding:12px;position:relative;min-height:90px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .memo-card .mc-title{font-size:12px;font-weight:700;margin-bottom:5px;padding-right:20px}
 .memo-card .mc-body{font-size:11px;color:#555;line-height:1.5}
-.memo-card .mc-del{position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;font-size:14px;color:rgba(0,0,0,.3)}
-.memo-card .mc-del:hover{color:#ef4444}
-.memo-card .mc-convert{position:absolute;bottom:8px;right:8px;font-size:10px;background:rgba(255,255,255,.6);border:none;border-radius:5px;padding:2px 6px;cursor:pointer;color:#555;font-weight:600}
+.mc-del{position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;font-size:14px;color:rgba(0,0,0,.3)}
+.mc-del:hover{color:#ef4444}
+.mc-convert{position:absolute;bottom:8px;right:8px;font-size:10px;background:rgba(255,255,255,.6);border:none;border-radius:5px;padding:2px 6px;cursor:pointer;color:#555;font-weight:600}
 .memo-colors{display:flex;gap:6px;margin:8px 0}
 .mc-color{width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:.15s}
 .mc-color.active{border-color:var(--text)}
 
-/* ═══════════════════════════════════════════ TODO */
+/* ══ TODO ══ */
 .todo-tabs{display:flex;gap:4px;margin-bottom:12px}
 .tab-btn{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:none;background:var(--border);color:var(--text2);transition:.15s}
 .tab-btn.active{background:var(--accent);color:#fff}
 .todo-item{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:10px;border:1px solid var(--border);margin-bottom:6px;background:var(--card);transition:.15s}
-.todo-item.done{opacity:.55}
-.todo-item.done .todo-title{text-decoration:line-through;color:var(--text2)}
+.todo-item.done{opacity:.55}.todo-item.done .todo-title{text-decoration:line-through;color:var(--text2)}
 .todo-cb{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;margin-top:2px;flex-shrink:0}
 .todo-info{flex:1;min-width:0}
 .todo-title{font-size:12px;font-weight:600;margin-bottom:3px}
 .todo-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .prio-badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px}
-.prio-high{background:#fee2e2;color:#dc2626}
-.prio-mid{background:#fef9c3;color:#854d0e}
-.prio-low{background:#d1fae5;color:#065f46}
+.prio-high{background:#fee2e2;color:#dc2626}.prio-mid{background:#fef9c3;color:#854d0e}.prio-low{background:#d1fae5;color:#065f46}
 .cat-badge{font-size:10px;padding:2px 6px;border-radius:4px;background:var(--accent-light);color:var(--accent-dark)}
 .due-badge{font-size:10px;color:var(--text2)}
-.todo-progress{margin-top:10px}
 .todo-prog-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:4px}
 .todo-prog-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .4s}
 
-/* ═══════════════════════════════════════════ GOALS */
+/* ══ GOALS ══ */
 .goal-text{font-size:13px;line-height:1.7;color:var(--text);background:var(--accent-light);border-radius:10px;padding:12px;margin-bottom:10px;min-height:60px}
 .goal-history{display:flex;flex-direction:column;gap:8px;max-height:200px;overflow-y:auto}
 .goal-hist-item{padding:8px 12px;border-left:3px solid var(--accent);background:var(--bg1,#fafafa);border-radius:0 8px 8px 0;font-size:11px}
 .goal-hist-item .gh-date{color:var(--text2);font-weight:600;margin-bottom:3px}
 .goal-hist-item .gh-reason{color:var(--text2);font-style:italic;margin-top:2px}
 
-/* ═══════════════════════════════════════════ NOTES */
+/* ══ NOTES ══ */
 .note-item{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
 .note-item .note-date{font-size:11px;font-weight:700;color:var(--accent-dark);margin-bottom:8px}
-.note-field{margin-bottom:6px}
-.note-field .nf-label{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
-.note-field .nf-val{font-size:12px;color:var(--text);line-height:1.5}
+.nf-label{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.nf-val{font-size:12px;color:var(--text);line-height:1.5;margin-bottom:6px}
 .note-imgs{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .note-img{width:64px;height:64px;border-radius:6px;object-fit:cover;cursor:pointer;border:2px solid var(--border)}
 .note-files{margin-top:6px}
 .note-file{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);padding:3px 0}
 .drop-zone{border:2px dashed var(--border);border-radius:10px;padding:16px;text-align:center;font-size:12px;color:var(--text2);cursor:pointer;transition:.2s;margin-top:8px}
 .drop-zone:hover,.drop-zone.drag-over{border-color:var(--accent);background:var(--accent-light)}
-.note-ai-result{background:linear-gradient(135deg,var(--accent-light),var(--bg2,#fff));border-radius:10px;padding:12px;margin-top:8px;font-size:12px;line-height:1.6;border:1px solid var(--accent)}
+.note-ai-result{background:linear-gradient(135deg,var(--accent-light),#fff);border-radius:10px;padding:12px;margin-top:8px;font-size:12px;line-height:1.6;border:1px solid var(--accent)}
 
-/* ═══════════════════════════════════════════ TIMELINE */
+/* ══ TIMELINE ══ */
 .timeline-wrap{overflow-x:auto;padding-bottom:10px}
-.timeline-track{position:relative;min-width:600px;padding:40px 20px 20px}
-.tl-line{position:absolute;top:52px;left:20px;right:20px;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px}
-.tl-events{position:relative;display:flex;align-items:flex-start;gap:0;min-height:80px}
+.timeline-track{position:relative;min-width:600px;padding:44px 20px 20px}
+.tl-line{position:absolute;top:54px;left:20px;right:20px;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px}
+.tl-events{position:relative;min-height:80px}
 .tl-event{position:absolute;transform:translateX(-50%);cursor:pointer;text-align:center}
-.tl-event .tl-dot{width:14px;height:14px;border-radius:50%;border:3px solid var(--card);margin:0 auto 4px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
-.tl-event .tl-label{font-size:9px;color:var(--text2);max-width:70px;line-height:1.3;word-break:break-all}
-.tl-dot-milestone{background:#f59e0b}
-.tl-dot-note{background:var(--accent)}
-.tl-dot-file{background:#8b5cf6}
+.tl-dot{width:14px;height:14px;border-radius:50%;border:3px solid var(--card);margin:0 auto 4px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+.tl-label{font-size:9px;color:var(--text2);max-width:70px;line-height:1.3;word-break:break-all}
+.tl-dot-milestone{background:#f59e0b}.tl-dot-note{background:var(--accent)}.tl-dot-file{background:#8b5cf6}
 
-/* ═══════════════════════════════════════════ EXPERIMENT */
-.exp-inputs{display:grid;gap:8px;margin-bottom:12px}
-.exp-row{display:flex;gap:8px;align-items:center}
-.exp-row input{flex:1}
+/* ══ EXPERIMENT ══ */
 .chart-wrap{position:relative;height:200px}
 
-/* ═══════════════════════════════════════════ PAPERS */
+/* ══ PAPERS ══ */
 .paper-item{border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px;transition:.15s}
 .paper-item:hover{border-color:var(--accent);background:var(--accent-light)}
 .paper-title{font-size:12px;font-weight:700;color:var(--text);cursor:pointer;margin-bottom:4px;line-height:1.4}
 .paper-title:hover{color:var(--accent-dark);text-decoration:underline}
 .paper-meta{font-size:10px;color:var(--text2);margin-bottom:6px}
 .paper-abstract{font-size:11px;color:var(--text2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.paper-actions{display:flex;gap:6px;margin-top:8px}
+.paper-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
 
-/* ═══════════════════════════════════════════ AI ANALYSIS */
+/* ══ REFERENCES ══ */
+.ref-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:10px;margin-bottom:6px;background:var(--card)}
+.ref-num{font-size:12px;font-weight:700;color:var(--accent-dark);min-width:28px;text-align:right;padding-top:1px}
+.ref-info{flex:1;min-width:0}
+.ref-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px;cursor:pointer}
+.ref-title:hover{text-decoration:underline;color:var(--accent-dark)}
+.ref-meta{font-size:11px;color:var(--text2);line-height:1.5}
+.ref-doi{font-size:10px;color:var(--accent-dark);margin-top:2px}
+
+/* ══ AI ══ */
 .ai-section{margin-bottom:16px}
 .ai-section-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
 .ai-result-box{background:var(--accent-light);border-radius:10px;padding:12px;font-size:12px;line-height:1.7;color:var(--text);border:1px solid var(--accent);white-space:pre-wrap}
 .ai-score{display:flex;align-items:center;gap:12px;background:var(--accent-light);border-radius:12px;padding:14px;margin-bottom:12px}
-.ai-score .score-num{font-size:36px;font-weight:800;color:var(--accent-dark)}
-.ai-score .score-label{font-size:12px;color:var(--text2);font-weight:600}
+.score-num{font-size:36px;font-weight:800;color:var(--accent-dark)}
+.score-label{font-size:12px;color:var(--text2);font-weight:600}
 .ai-loading{display:flex;align-items:center;gap:8px;color:var(--text2);font-size:12px;padding:12px}
 .spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .missing-item{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-radius:8px;background:#fff;border:1px solid var(--border);margin-bottom:5px;font-size:12px}
 
-/* ═══════════════════════════════════════════ MODAL */
+/* ══ MODAL ══ */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);backdrop-filter:blur(3px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px}
 .modal-overlay.open{display:flex}
 .modal{background:#fff;border-radius:20px;padding:28px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2)}
@@ -223,255 +219,260 @@ label{font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bot
 .modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--text2);line-height:1}
 .modal-close:hover{color:var(--text)}
 
-/* ═══════════════════════════════════════════ SETTINGS */
-.settings-modal{max-width:400px}
-
-/* ═══════════════════════════════════════════ SCROLLBAR */
-::-webkit-scrollbar{width:5px;height:5px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:var(--accent)}
-
-/* ═══════════════════════════════════════════ UTILITIES */
+/* ══ UTILS ══ */
 .mt8{margin-top:8px}.mt12{margin-top:12px}.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}
 .text-sm{font-size:12px}.text-xs{font-size:11px}.text-muted{color:var(--text2)}
 .flex{display:flex}.items-center{align-items:center}.gap6{gap:6px}.gap8{gap:8px}.justify-between{justify-content:space-between}
 .w100{width:100%}.hidden{display:none!important}
 .tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600}
-.badge-blue{background:#dbeafe;color:#1d4ed8}
-.badge-green{background:#d1fae5;color:#065f46}
-.badge-orange{background:#ffedd5;color:#c2410c}
+.badge-blue{background:#dbeafe;color:#1d4ed8}.badge-green{background:#d1fae5;color:#065f46}.badge-orange{background:#ffedd5;color:#c2410c}
 .divider{height:1px;background:var(--border);margin:12px 0}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--accent)}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════ HEADER ═══════════════ -->
-<header>
-  <div class="hc">
-    <div class="h-top">
-      <div class="h-left">
-        <div class="h-sub">AI Research Management Dashboard</div>
-        <div class="h-title">마이크로플루이딕 유도가열 온도제어 시스템</div>
-      </div>
-      <div class="h-right">
-        <div class="season-badge" id="seasonBadge">🌸 봄</div>
-        <div class="today-badge" id="todayBadge">2026.03.24</div>
-        <button class="h-btn" onclick="openSettings()" title="설정">⚙️</button>
-      </div>
-    </div>
-    <div class="h-progress">
-      <div class="h-progress-label">
-        <span>전체 마일스톤 진행률</span>
-        <span id="hdrProgress">0%</span>
-      </div>
-      <div class="h-progress-bar"><div class="h-progress-fill" id="hdrProgressFill" style="width:0%"></div></div>
-    </div>
+<!-- ══════════════════════ PROJECT SCREEN ══════════════════════ -->
+<div id="psScreen">
+  <div class="ps-header">
+    <div class="ps-season" id="psSeason">🌸 봄</div>
+    <h1>AI 연구 관리 대시보드</h1>
+    <p>프로젝트를 선택하여 연구를 시작하세요</p>
+    <div class="ps-date" id="psDate"></div>
   </div>
-</header>
+  <div class="ps-grid" id="psGrid"></div>
+</div>
 
-<!-- ═══════════════ DASHBOARD GRID ═══════════════ -->
-<div class="dash">
+<!-- ══════════════════════ DASHBOARD ══════════════════════ -->
+<div id="dashboard" style="display:none">
 
-  <!-- ── COL 1 ── -->
-  <div class="col">
-
-    <!-- 1. CALENDAR -->
-    <div class="card">
-      <div class="card-head">
-        <div class="card-title"><span class="icon">📅</span> 연구 캘린더</div>
-        <div class="card-actions">
-          <button class="btn btn-primary btn-sm" onclick="openAddEvent()">+ 일정</button>
+  <!-- HEADER -->
+  <header>
+    <div class="hc">
+      <div class="h-top">
+        <div class="h-left">
+          <div class="h-sub">AI Research Management Dashboard</div>
+          <div class="h-title" id="hdrTitle">프로젝트명</div>
+        </div>
+        <div class="h-right">
+          <button class="h-btn" onclick="backToProjects()">← 프로젝트 목록</button>
+          <div class="season-badge" id="seasonBadge">🌸 봄</div>
+          <div class="today-badge" id="todayBadge"></div>
+          <button class="h-btn" onclick="openSettings()">⚙️ 설정</button>
         </div>
       </div>
-      <div class="card-body">
-        <div class="cal-nav">
-          <button onclick="calPrev()">‹</button>
-          <span id="calTitle"></span>
-          <button onclick="calNext()">›</button>
-        </div>
-        <div class="cal-grid" id="calGrid"></div>
-        <div id="calEventList" class="event-list"></div>
-      </div>
-    </div>
-
-    <!-- 4. RESEARCH GOALS -->
-    <div class="card">
-      <div class="card-head">
-        <div class="card-title"><span class="icon">📌</span> 연구 목표</div>
-        <div class="card-actions">
-          <button class="btn btn-ghost btn-sm" onclick="openEditGoal()">수정</button>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="goal-text" id="goalText">연구 목표를 설정하세요.</div>
-        <div class="divider"></div>
-        <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px">수정 이력</div>
-        <div class="goal-history" id="goalHistory"></div>
+      <div class="h-progress">
+        <div class="h-progress-label"><span>전체 TODO 진행률</span><span id="hdrProgress">0%</span></div>
+        <div class="h-progress-bar"><div class="h-progress-fill" id="hdrProgressFill" style="width:0%"></div></div>
       </div>
     </div>
+  </header>
 
-  </div><!-- /col1 -->
+  <!-- DASH GRID -->
+  <div class="dash">
 
-  <!-- ── COL 2 ── -->
-  <div class="col">
-
-    <!-- 2. MEMO -->
-    <div class="card">
-      <div class="card-head">
-        <div class="card-title"><span class="icon">📝</span> 메모 &amp; 임시 일정</div>
-        <div class="card-actions">
-          <button class="btn btn-primary btn-sm" onclick="openAddMemo()">+ 메모</button>
+    <!-- COL 1 -->
+    <div class="col">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><span class="icon">📅</span> 연구 캘린더</div>
+          <div class="card-actions"><button class="btn btn-primary btn-sm" onclick="openAddEvent()">+ 일정</button></div>
+        </div>
+        <div class="card-body">
+          <div class="cal-nav">
+            <button onclick="calPrev()">‹</button>
+            <span id="calTitle"></span>
+            <button onclick="calNext()">›</button>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div id="calEventList" class="event-list"></div>
         </div>
       </div>
-      <div class="card-body">
-        <div class="memo-grid" id="memoGrid">
-          <div class="text-xs text-muted" style="grid-column:span 2;padding:10px 0;text-align:center">메모가 없습니다.</div>
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><span class="icon">📌</span> 연구 목표</div>
+          <div class="card-actions"><button class="btn btn-ghost btn-sm" onclick="openEditGoal()">수정</button></div>
+        </div>
+        <div class="card-body">
+          <div class="goal-text" id="goalText"></div>
+          <div class="divider"></div>
+          <div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px">수정 이력</div>
+          <div class="goal-history" id="goalHistory"></div>
         </div>
       </div>
-    </div>
+    </div><!-- /col1 -->
 
-    <!-- 3. TODO -->
-    <div class="card">
-      <div class="card-head">
-        <div class="card-title"><span class="icon">✅</span> 실험/연구 TODO</div>
-        <div class="card-actions">
-          <button class="btn btn-primary btn-sm" onclick="openAddTodo()">+ 추가</button>
+    <!-- COL 2 -->
+    <div class="col">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><span class="icon">📝</span> 메모 &amp; 임시 일정</div>
+          <div class="card-actions"><button class="btn btn-primary btn-sm" onclick="openAddMemo()">+ 메모</button></div>
+        </div>
+        <div class="card-body">
+          <div class="memo-grid" id="memoGrid"></div>
         </div>
       </div>
-      <div class="card-body">
-        <div class="todo-tabs">
-          <button class="tab-btn active" onclick="switchTodoTab('all',this)">전체</button>
-          <button class="tab-btn" onclick="switchTodoTab('week',this)">주간</button>
-          <button class="tab-btn" onclick="switchTodoTab('month',this)">월간</button>
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><span class="icon">✅</span> 실험/연구 TODO</div>
+          <div class="card-actions"><button class="btn btn-primary btn-sm" onclick="openAddTodo()">+ 추가</button></div>
         </div>
-        <div class="todo-progress">
+        <div class="card-body">
+          <div class="todo-tabs">
+            <button class="tab-btn active" onclick="switchTodoTab('all',this)">전체</button>
+            <button class="tab-btn" onclick="switchTodoTab('week',this)">주간</button>
+            <button class="tab-btn" onclick="switchTodoTab('month',this)">월간</button>
+          </div>
           <div class="flex justify-between items-center">
             <span class="text-xs text-muted">진행률</span>
             <span class="text-xs text-muted" id="todoProgressLabel">0 / 0</span>
           </div>
           <div class="todo-prog-bar"><div class="todo-prog-fill" id="todoProgressFill" style="width:0%"></div></div>
-        </div>
-        <div class="mt8" id="todoList"></div>
-      </div>
-    </div>
-
-    <!-- 6. TIMELINE -->
-    <div class="card">
-      <div class="card-head">
-        <div class="card-title"><span class="icon">📊</span> 연구 진행 타임라인</div>
-        <div class="card-actions">
-          <button class="btn btn-ghost btn-sm" onclick="openAddMilestone()">+ 마일스톤</button>
+          <div class="mt8" id="todoList"></div>
         </div>
       </div>
-      <div class="card-body">
-        <div class="timeline-wrap">
-          <div class="timeline-track" id="timelineTrack">
-            <div class="tl-line"></div>
-            <div class="tl-events" id="tlEvents"></div>
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><span class="icon">📊</span> 연구 진행 타임라인</div>
+          <div class="card-actions"><button class="btn btn-ghost btn-sm" onclick="openAddMilestone()">+ 마일스톤</button></div>
+        </div>
+        <div class="card-body">
+          <div class="timeline-wrap">
+            <div class="timeline-track" id="timelineTrack">
+              <div class="tl-line"></div>
+              <div class="tl-events" id="tlEvents"></div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </div><!-- /col2 -->
 
-  </div><!-- /col2 -->
-
-  <!-- ── COL 3 ── -->
-  <div class="col">
-
-    <!-- 7. EXPERIMENT DATA -->
-    <div class="card">
-      <div class="card-head">
-        <div class="card-title"><span class="icon">🔬</span> 실험 데이터</div>
-        <div class="card-actions">
-          <button class="btn btn-ghost btn-sm" onclick="openAddExpData()">+ 데이터</button>
+    <!-- COL 3 -->
+    <div class="col">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><span class="icon">🔬</span> 실험 데이터</div>
+          <div class="card-actions"><button class="btn btn-ghost btn-sm" onclick="openAddExpData()">+ 데이터</button></div>
+        </div>
+        <div class="card-body">
+          <div class="chart-wrap"><canvas id="expChart"></canvas></div>
+          <div class="mt8"><button class="btn btn-ghost btn-sm w100" onclick="openExpAnalysis()">🤖 AI 분석</button></div>
         </div>
       </div>
-      <div class="card-body">
-        <div class="chart-wrap"><canvas id="expChart"></canvas></div>
-        <div class="mt8 flex gap6">
-          <button class="btn btn-ghost btn-sm w100" onclick="openExpAnalysis()">🤖 AI 분석</button>
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><span class="icon">🤖</span> AI 연구 분석</div>
+          <div class="card-actions"><button class="btn btn-primary btn-sm" onclick="runFullAnalysis()">분석 실행</button></div>
         </div>
-      </div>
-    </div>
-
-    <!-- 9. AI ANALYSIS -->
-    <div class="card">
-      <div class="card-head">
-        <div class="card-title"><span class="icon">🤖</span> AI 연구 분석</div>
-        <div class="card-actions">
-          <button class="btn btn-primary btn-sm" onclick="runFullAnalysis()">분석 실행</button>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="ai-section">
-          <div class="ai-section-title">학회 URL 분석 → 캘린더 자동 등록</div>
-          <div class="flex gap6">
-            <input type="url" id="confUrlInput" placeholder="학회 URL 입력..." style="flex:1">
-            <button class="btn btn-primary btn-sm" onclick="analyzeConfUrl()">분석</button>
+        <div class="card-body">
+          <div class="ai-section">
+            <div class="ai-section-title">학회 URL 분석 → 캘린더 자동 등록</div>
+            <div class="flex gap6">
+              <input type="url" id="confUrlInput" placeholder="학회 URL 입력..." style="flex:1">
+              <button class="btn btn-primary btn-sm" onclick="analyzeConfUrl()">분석</button>
+            </div>
+          </div>
+          <div id="aiResultArea">
+            <div class="text-xs text-muted" style="padding:12px 0;text-align:center">API Key를 설정하고 분석을 실행하세요.</div>
           </div>
         </div>
-        <div id="aiResultArea">
-          <div class="text-xs text-muted" style="padding:12px 0;text-align:center">API Key를 설정하고 분석을 실행하세요.</div>
+      </div>
+    </div><!-- /col3 -->
+
+    <!-- FULL: NOTES -->
+    <div class="card span3">
+      <div class="card-head">
+        <div class="card-title"><span class="icon">📓</span> 연구 노트</div>
+        <div class="card-actions"><button class="btn btn-primary btn-sm" onclick="openAddNote()">+ 새 노트</button></div>
+      </div>
+      <div class="card-body">
+        <div id="notesList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px"></div>
+      </div>
+    </div>
+
+    <!-- FULL: REFERENCES -->
+    <div class="card span3">
+      <div class="card-head">
+        <div class="card-title"><span class="icon">📚</span> 참고문헌</div>
+        <div class="card-actions">
+          <button class="btn btn-ghost btn-sm" onclick="exportRefs()">📋 내보내기</button>
+          <button class="btn btn-primary btn-sm" onclick="openAddRef()">+ 추가</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div id="refsList"></div>
+      </div>
+    </div>
+
+    <!-- FULL: PAPERS -->
+    <div class="card span3">
+      <div class="card-head">
+        <div class="card-title"><span class="icon">📄</span> 최신 논문 (arXiv + Semantic Scholar)</div>
+        <div class="card-actions">
+          <div class="text-xs text-muted" id="paperKeywordLabel" style="align-self:center;margin-right:4px"></div>
+          <button class="btn btn-ghost btn-sm" onclick="fetchPapers()">🔄 새로고침</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div id="papersList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px">
+          <div class="text-xs text-muted" style="padding:12px 0">논문을 불러오는 중...</div>
         </div>
       </div>
     </div>
 
-  </div><!-- /col3 -->
+  </div><!-- /dash -->
+</div><!-- /dashboard -->
 
-  <!-- ── FULL WIDTH: NOTES ── -->
-  <div class="card span3">
-    <div class="card-head">
-      <div class="card-title"><span class="icon">📓</span> 연구 노트</div>
-      <div class="card-actions">
-        <button class="btn btn-primary btn-sm" onclick="openAddNote()">+ 새 노트</button>
-      </div>
+<!-- ══════════════════════ MODALS ══════════════════════ -->
+
+<!-- ADD PROJECT -->
+<div class="modal-overlay" id="modalAddProject">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="modalProjTitle">➕ 새 프로젝트</div>
+      <button class="modal-close" onclick="closeModal('modalAddProject')">×</button>
     </div>
-    <div class="card-body">
-      <div id="notesList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px"></div>
+    <div class="form-row mb8">
+      <label>프로젝트명 *</label>
+      <input type="text" id="projName" placeholder="예: 마이크로플루이딕 온도제어 연구">
+    </div>
+    <div class="form-row mb8">
+      <label>설명</label>
+      <textarea id="projDesc" placeholder="연구 개요나 목적을 간략히 입력하세요" style="min-height:56px"></textarea>
+    </div>
+    <div class="mb8">
+      <label>프로젝트 색상</label>
+      <div class="color-picker-row" id="projColorPicker"></div>
+    </div>
+    <div class="form-row mb8">
+      <label>논문 검색 키워드</label>
+      <input type="text" id="projKeywords" placeholder="microfluidic induction heating temperature control">
+    </div>
+    <div class="form-row mb8">
+      <label>연구 시작일</label>
+      <input type="date" id="projStartDate">
+    </div>
+    <div class="flex gap6 justify-between mt12">
+      <button class="btn btn-ghost" onclick="closeModal('modalAddProject')">취소</button>
+      <button class="btn btn-primary" onclick="saveProject()">저장</button>
     </div>
   </div>
-
-  <!-- ── FULL WIDTH: PAPERS ── -->
-  <div class="card span3">
-    <div class="card-head">
-      <div class="card-title"><span class="icon">📄</span> 최신 논문 (arXiv)</div>
-      <div class="card-actions">
-        <button class="btn btn-ghost btn-sm" onclick="fetchPapers()">🔄 새로고침</button>
-      </div>
-    </div>
-    <div class="card-body">
-      <div id="papersList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px">
-        <div class="text-xs text-muted" style="padding:12px 0">논문을 불러오는 중...</div>
-      </div>
-    </div>
-  </div>
-
-</div><!-- /dash -->
-
-<!-- ══════════════════════════════════════════════════
-     MODALS
-══════════════════════════════════════════════════ -->
+</div>
 
 <!-- ADD EVENT -->
 <div class="modal-overlay" id="modalAddEvent">
   <div class="modal">
     <div class="modal-head">
-      <div class="modal-title">📅 일정 추가 — <span id="modalEventDate"></span></div>
+      <div class="modal-title">📅 일정 추가</div>
       <button class="modal-close" onclick="closeModal('modalAddEvent')">×</button>
     </div>
-    <div class="form-row mb8">
-      <label>일정 제목</label>
-      <input type="text" id="evTitle" placeholder="일정 제목">
-    </div>
+    <div class="form-row mb8"><label>일정 제목</label><input type="text" id="evTitle" placeholder="일정 제목"></div>
     <div class="form-row c2 mb8">
-      <div>
-        <label>날짜</label>
-        <input type="date" id="evDate">
-      </div>
-      <div>
-        <label>종류</label>
-        <select id="evType">
+      <div><label>날짜</label><input type="date" id="evDate"></div>
+      <div><label>종류</label>
+        <select id="evType" onchange="document.getElementById('evConfUrlRow').style.display=this.value==='conference'?'block':'none'">
           <option value="research">🔵 연구 일정</option>
           <option value="general">🟢 일반 일정</option>
           <option value="conference">🟠 학회 일정</option>
@@ -479,16 +480,10 @@ label{font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bot
       </div>
     </div>
     <div class="form-row mb8" id="evConfUrlRow" style="display:none">
-      <label>학회 URL (선택 — Claude API 자동 분석)</label>
-      <div class="flex gap6">
-        <input type="url" id="evConfUrl" placeholder="https://">
-        <button class="btn btn-ghost btn-sm" onclick="autoFillConf()">자동입력</button>
-      </div>
+      <label>학회 URL (Claude API 자동 분석)</label>
+      <div class="flex gap6"><input type="url" id="evConfUrl" placeholder="https://"><button class="btn btn-ghost btn-sm" onclick="autoFillConf()">자동입력</button></div>
     </div>
-    <div class="form-row mb8">
-      <label>메모</label>
-      <textarea id="evNote" placeholder="추가 메모"></textarea>
-    </div>
+    <div class="form-row mb8"><label>메모</label><textarea id="evNote" placeholder="추가 메모"></textarea></div>
     <div id="evAutoResult" style="display:none" class="note-ai-result mb8"></div>
     <div class="flex gap6 justify-between">
       <button class="btn btn-ghost" onclick="closeModal('modalAddEvent')">취소</button>
@@ -500,20 +495,10 @@ label{font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bot
 <!-- ADD MEMO -->
 <div class="modal-overlay" id="modalAddMemo">
   <div class="modal">
-    <div class="modal-head">
-      <div class="modal-title">📝 메모 추가</div>
-      <button class="modal-close" onclick="closeModal('modalAddMemo')">×</button>
-    </div>
-    <div class="form-row mb8">
-      <label>제목</label>
-      <input type="text" id="memoTitle" placeholder="메모 제목">
-    </div>
-    <div class="form-row mb8">
-      <label>내용</label>
-      <textarea id="memoBody" placeholder="내용을 입력하세요"></textarea>
-    </div>
-    <div class="mb8">
-      <label>색상</label>
+    <div class="modal-head"><div class="modal-title">📝 메모 추가</div><button class="modal-close" onclick="closeModal('modalAddMemo')">×</button></div>
+    <div class="form-row mb8"><label>제목</label><input type="text" id="memoTitle" placeholder="메모 제목"></div>
+    <div class="form-row mb8"><label>내용</label><textarea id="memoBody" placeholder="내용"></textarea></div>
+    <div class="mb8"><label>색상</label>
       <div class="memo-colors" id="memoColorPicker">
         <div class="mc-color active" style="background:#fff9c4" data-color="#fff9c4" onclick="selectMemoColor(this)"></div>
         <div class="mc-color" style="background:#f8bbd0" data-color="#f8bbd0" onclick="selectMemoColor(this)"></div>
@@ -532,37 +517,13 @@ label{font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bot
 <!-- ADD TODO -->
 <div class="modal-overlay" id="modalAddTodo">
   <div class="modal">
-    <div class="modal-head">
-      <div class="modal-title">✅ TODO 추가</div>
-      <button class="modal-close" onclick="closeModal('modalAddTodo')">×</button>
-    </div>
-    <div class="form-row mb8">
-      <label>할 일</label>
-      <input type="text" id="todoTitle" placeholder="할 일 내용">
-    </div>
+    <div class="modal-head"><div class="modal-title">✅ TODO 추가</div><button class="modal-close" onclick="closeModal('modalAddTodo')">×</button></div>
+    <div class="form-row mb8"><label>할 일</label><input type="text" id="todoTitle" placeholder="할 일 내용"></div>
     <div class="form-row c2 mb8">
-      <div>
-        <label>우선순위</label>
-        <select id="todoPriority">
-          <option value="high">🔴 높음</option>
-          <option value="mid" selected>🟡 중간</option>
-          <option value="low">🟢 낮음</option>
-        </select>
-      </div>
-      <div>
-        <label>카테고리</label>
-        <select id="todoCategory">
-          <option value="exp">실험</option>
-          <option value="analysis">분석</option>
-          <option value="paper">문헌</option>
-          <option value="etc">기타</option>
-        </select>
-      </div>
+      <div><label>우선순위</label><select id="todoPriority"><option value="high">🔴 높음</option><option value="mid" selected>🟡 중간</option><option value="low">🟢 낮음</option></select></div>
+      <div><label>카테고리</label><select id="todoCategory"><option value="exp">실험</option><option value="analysis">분석</option><option value="paper">문헌</option><option value="etc">기타</option></select></div>
     </div>
-    <div class="form-row mb8">
-      <label>마감일</label>
-      <input type="date" id="todoDue">
-    </div>
+    <div class="form-row mb8"><label>마감일</label><input type="date" id="todoDue"></div>
     <div class="flex gap6 justify-between">
       <button class="btn btn-ghost" onclick="closeModal('modalAddTodo')">취소</button>
       <button class="btn btn-primary" onclick="saveTodo()">저장</button>
@@ -573,18 +534,9 @@ label{font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bot
 <!-- EDIT GOAL -->
 <div class="modal-overlay" id="modalEditGoal">
   <div class="modal">
-    <div class="modal-head">
-      <div class="modal-title">📌 연구 목표 수정</div>
-      <button class="modal-close" onclick="closeModal('modalEditGoal')">×</button>
-    </div>
-    <div class="form-row mb8">
-      <label>연구 목표</label>
-      <textarea id="goalInput" style="min-height:120px" placeholder="연구 목표를 입력하세요"></textarea>
-    </div>
-    <div class="form-row mb8">
-      <label>수정 이유</label>
-      <input type="text" id="goalReason" placeholder="수정 이유를 간단히 적어주세요">
-    </div>
+    <div class="modal-head"><div class="modal-title">📌 연구 목표 수정</div><button class="modal-close" onclick="closeModal('modalEditGoal')">×</button></div>
+    <div class="form-row mb8"><label>연구 목표</label><textarea id="goalInput" style="min-height:120px" placeholder="연구 목표를 입력하세요"></textarea></div>
+    <div class="form-row mb8"><label>수정 이유</label><input type="text" id="goalReason" placeholder="수정 이유를 간단히 적어주세요"></div>
     <div class="flex gap6 justify-between">
       <button class="btn btn-ghost" onclick="closeModal('modalEditGoal')">취소</button>
       <button class="btn btn-primary" onclick="saveGoal()">저장</button>
@@ -595,39 +547,19 @@ label{font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bot
 <!-- ADD NOTE -->
 <div class="modal-overlay" id="modalAddNote">
   <div class="modal" style="max-width:560px">
-    <div class="modal-head">
-      <div class="modal-title">📓 연구 노트 작성</div>
-      <button class="modal-close" onclick="closeModal('modalAddNote')">×</button>
-    </div>
-    <div class="form-row mb8">
-      <label>날짜</label>
-      <input type="date" id="noteDate">
-    </div>
-    <div class="form-row mb8">
-      <label>실험 내용</label>
-      <textarea id="noteExp" placeholder="실험 내용을 상세히 기록하세요"></textarea>
-    </div>
-    <div class="form-row mb8">
-      <label>결과</label>
-      <textarea id="noteResult" placeholder="실험 결과"></textarea>
-    </div>
+    <div class="modal-head"><div class="modal-title">📓 연구 노트 작성</div><button class="modal-close" onclick="closeModal('modalAddNote')">×</button></div>
+    <div class="form-row mb8"><label>날짜</label><input type="date" id="noteDate"></div>
+    <div class="form-row mb8"><label>실험 내용</label><textarea id="noteExp" placeholder="실험 내용"></textarea></div>
+    <div class="form-row mb8"><label>결과</label><textarea id="noteResult" placeholder="실험 결과"></textarea></div>
     <div class="form-row c2 mb8">
-      <div>
-        <label>문제점</label>
-        <textarea id="noteProb" placeholder="발생한 문제점" style="min-height:60px"></textarea>
-      </div>
-      <div>
-        <label>해결 방법</label>
-        <textarea id="noteSol" placeholder="해결 방법" style="min-height:60px"></textarea>
-      </div>
+      <div><label>문제점</label><textarea id="noteProb" placeholder="발생한 문제점" style="min-height:60px"></textarea></div>
+      <div><label>해결 방법</label><textarea id="noteSol" placeholder="해결 방법" style="min-height:60px"></textarea></div>
     </div>
     <div class="mb8">
       <label>이미지/파일 첨부</label>
-      <div class="drop-zone" id="noteDropZone" onclick="document.getElementById('noteFileInput').click()">
-        📎 드래그앤드롭 또는 클릭해서 파일 선택 (이미지, CSV, PDF)
-      </div>
+      <div class="drop-zone" id="noteDropZone" onclick="document.getElementById('noteFileInput').click()">📎 드래그앤드롭 또는 클릭 (이미지, CSV, PDF)</div>
       <input type="file" id="noteFileInput" multiple accept="image/*,.csv,.pdf" style="display:none" onchange="handleNoteFiles(event)">
-      <div id="noteFilePreview" class="flex gap6 flex-wrap mt8"></div>
+      <div id="noteFilePreview" class="flex gap6 mt8" style="flex-wrap:wrap"></div>
     </div>
     <div class="flex gap6 justify-between">
       <button class="btn btn-ghost" onclick="closeModal('modalAddNote')">취소</button>
@@ -639,18 +571,9 @@ label{font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bot
 <!-- ADD MILESTONE -->
 <div class="modal-overlay" id="modalAddMilestone">
   <div class="modal">
-    <div class="modal-head">
-      <div class="modal-title">🏆 마일스톤 달성</div>
-      <button class="modal-close" onclick="closeModal('modalAddMilestone')">×</button>
-    </div>
-    <div class="form-row mb8">
-      <label>마일스톤 내용</label>
-      <input type="text" id="msTitle" placeholder="달성한 마일스톤">
-    </div>
-    <div class="form-row mb8">
-      <label>날짜</label>
-      <input type="date" id="msDate">
-    </div>
+    <div class="modal-head"><div class="modal-title">🏆 마일스톤 달성</div><button class="modal-close" onclick="closeModal('modalAddMilestone')">×</button></div>
+    <div class="form-row mb8"><label>마일스톤 내용</label><input type="text" id="msTitle" placeholder="달성한 마일스톤"></div>
+    <div class="form-row mb8"><label>날짜</label><input type="date" id="msDate"></div>
     <div class="flex gap6 justify-between">
       <button class="btn btn-ghost" onclick="closeModal('modalAddMilestone')">취소</button>
       <button class="btn btn-primary" onclick="saveMilestone()">저장</button>
@@ -661,18 +584,12 @@ label{font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bot
 <!-- ADD EXP DATA -->
 <div class="modal-overlay" id="modalAddExpData">
   <div class="modal">
-    <div class="modal-head">
-      <div class="modal-title">🔬 실험 데이터 추가</div>
-      <button class="modal-close" onclick="closeModal('modalAddExpData')">×</button>
-    </div>
+    <div class="modal-head"><div class="modal-title">🔬 실험 데이터 추가</div><button class="modal-close" onclick="closeModal('modalAddExpData')">×</button></div>
     <div class="form-row c2 mb8">
       <div><label>시간 (분)</label><input type="number" id="expTime" placeholder="0"></div>
       <div><label>온도 (°C)</label><input type="number" id="expTemp" placeholder="0"></div>
     </div>
-    <div class="form-row mb8">
-      <label>메모</label>
-      <input type="text" id="expMemo" placeholder="추가 메모">
-    </div>
+    <div class="form-row mb8"><label>메모</label><input type="text" id="expMemo" placeholder="추가 메모"></div>
     <div class="flex gap6 justify-between">
       <button class="btn btn-ghost" onclick="closeModal('modalAddExpData')">취소</button>
       <button class="btn btn-primary" onclick="saveExpData()">저장</button>
@@ -680,21 +597,36 @@ label{font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bot
   </div>
 </div>
 
+<!-- ADD REFERENCE -->
+<div class="modal-overlay" id="modalAddRef">
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">📚 참고문헌 추가</div><button class="modal-close" onclick="closeModal('modalAddRef')">×</button></div>
+    <div class="form-row mb8"><label>제목 *</label><input type="text" id="refTitle" placeholder="논문 제목"></div>
+    <div class="form-row mb8"><label>저자</label><input type="text" id="refAuthors" placeholder="저자1, 저자2, ..."></div>
+    <div class="form-row c2 mb8">
+      <div><label>저널/학술지</label><input type="text" id="refJournal" placeholder="저널명"></div>
+      <div><label>연도</label><input type="number" id="refYear" placeholder="2024" min="1900" max="2100"></div>
+    </div>
+    <div class="form-row mb8"><label>DOI</label><input type="text" id="refDoi" placeholder="10.1234/example"></div>
+    <div class="form-row mb8"><label>링크</label><input type="url" id="refLink" placeholder="https://..."></div>
+    <div class="flex gap6 justify-between">
+      <button class="btn btn-ghost" onclick="closeModal('modalAddRef')">취소</button>
+      <button class="btn btn-primary" onclick="saveRef()">저장</button>
+    </div>
+  </div>
+</div>
+
 <!-- SETTINGS -->
 <div class="modal-overlay" id="modalSettings">
-  <div class="modal settings-modal">
-    <div class="modal-head">
-      <div class="modal-title">⚙️ 설정</div>
-      <button class="modal-close" onclick="closeModal('modalSettings')">×</button>
-    </div>
-    <div class="form-row mb8">
-      <label>Claude API Key</label>
-      <input type="password" id="apiKeyInput" placeholder="sk-ant-...">
-    </div>
-    <div class="form-row mb8">
-      <label>연구 시작일</label>
-      <input type="date" id="researchStartDate">
-    </div>
+  <div class="modal">
+    <div class="modal-head"><div class="modal-title">⚙️ 설정</div><button class="modal-close" onclick="closeModal('modalSettings')">×</button></div>
+    <div class="form-section-title" style="margin-top:0;border-top:none;padding-top:0">전역 설정</div>
+    <div class="form-row mb8"><label>Claude API Key</label><input type="password" id="apiKeyInput" placeholder="sk-ant-..."></div>
+    <div class="form-section-title">프로젝트 설정</div>
+    <div class="form-row mb8"><label>프로젝트명</label><input type="text" id="settingsProjName" placeholder="프로젝트명"></div>
+    <div class="form-row mb8"><label>설명</label><textarea id="settingsProjDesc" placeholder="프로젝트 설명" style="min-height:56px"></textarea></div>
+    <div class="form-row mb8"><label>논문 검색 키워드</label><input type="text" id="settingsProjKeywords" placeholder="microfluidic induction heating"></div>
+    <div class="form-row mb8"><label>연구 시작일</label><input type="date" id="settingsProjStartDate"></div>
     <div class="flex gap6 justify-between mt12">
       <button class="btn btn-ghost" onclick="closeModal('modalSettings')">취소</button>
       <button class="btn btn-primary" onclick="saveSettings()">저장</button>
@@ -705,10 +637,7 @@ label{font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bot
 <!-- TIMELINE DETAIL -->
 <div class="modal-overlay" id="modalTlDetail">
   <div class="modal">
-    <div class="modal-head">
-      <div class="modal-title" id="tlDetailTitle">이벤트</div>
-      <button class="modal-close" onclick="closeModal('modalTlDetail')">×</button>
-    </div>
+    <div class="modal-head"><div class="modal-title" id="tlDetailTitle">이벤트</div><button class="modal-close" onclick="closeModal('modalTlDetail')">×</button></div>
     <div id="tlDetailBody" style="font-size:13px;line-height:1.7;color:var(--text)"></div>
   </div>
 </div>
@@ -720,930 +649,824 @@ label{font-size:11px;font-weight:600;color:var(--text2);display:block;margin-bot
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════
-     JAVASCRIPT
-══════════════════════════════════════════════════ -->
+<!-- ══════════════════════ JAVASCRIPT ══════════════════════ -->
 <script>
-// ═══════════════════════════════════
-// STATE
-// ═══════════════════════════════════
-const LS = key => { try { return JSON.parse(localStorage.getItem(key)) } catch(e) { return null } };
-const SS = (key, val) => localStorage.setItem(key, JSON.stringify(val));
-
-let state = {
-  events: LS('rd_events') || [],
-  memos: LS('rd_memos') || [],
-  todos: LS('rd_todos') || [],
-  goal: LS('rd_goal') || { text: '연구 목표를 설정하세요.', history: [] },
-  notes: LS('rd_notes') || [],
-  milestones: LS('rd_milestones') || [],
-  expData: LS('rd_expdata') || [],
-  apiKey: LS('rd_apikey') || '',
-  startDate: LS('rd_startdate') || new Date().toISOString().slice(0,10),
-  calYear: new Date().getFullYear(),
-  calMonth: new Date().getMonth(),
-  calSelectedDate: new Date().toISOString().slice(0,10),
-  todoTab: 'all',
-  noteFiles: [],
-  memoColor: '#fff9c4'
+// ═══ CONSTANTS ═══
+const PROJ_COLORS = ['#ffb7c5','#48cae4','#e07a2f','#7986cb','#66bb6a','#ab47bc','#ffa726','#4db6ac'];
+const DEFAULT_KW = 'microfluidic induction heating temperature control';
+const SEASON_META = {
+  spring:{label:'봄',icon:'🌸'},summer:{label:'여름',icon:'☀️'},
+  autumn:{label:'가을',icon:'🍁'},winter:{label:'겨울',icon:'❄️'}
 };
+
+// ═══ STORAGE ═══
+const LS  = k => { try{return JSON.parse(localStorage.getItem(k))}catch(e){return null} };
+const SS  = (k,v) => localStorage.setItem(k, JSON.stringify(v));
+const LSP = (pid,k) => { try{return JSON.parse(localStorage.getItem(`rd_${pid}_${k}`))}catch(e){return null} };
+const SSP = (pid,k,v) => localStorage.setItem(`rd_${pid}_${k}`, JSON.stringify(v));
+
+// ═══ STATE ═══
+let projects = LS('rd_projects') || [];
+let state = null;
+let _papers = [];
+let expChart = null;
+let _editProjId = null;
+let _projColor = PROJ_COLORS[0];
+let _memoColor = '#fff9c4';
 
 function save(key) {
-  const map = {
-    events:'rd_events', memos:'rd_memos', todos:'rd_todos',
-    goal:'rd_goal', notes:'rd_notes', milestones:'rd_milestones',
-    expData:'rd_expdata'
-  };
-  if(map[key]) SS(map[key], state[key]);
+  if(!state) return;
+  const map = {events:'events',memos:'memos',todos:'todos',goal:'goal',
+    notes:'notes',milestones:'milestones',expData:'expdata',refs:'refs'};
+  if(map[key]) SSP(state.pid, map[key], state[key]);
 }
 
-// ═══════════════════════════════════
-// SEASON THEME
-// ═══════════════════════════════════
-function getSeason(month) {
-  if(month >= 2 && month <= 4) return 'spring';
-  if(month >= 5 && month <= 7) return 'summer';
-  if(month >= 8 && month <= 10) return 'autumn';
-  return 'winter';
+// ═══ PROJECT MANAGEMENT ═══
+function openProject(pid) {
+  const proj = projects.find(p=>p.id===pid);
+  if(!proj) return;
+  state = {
+    pid, project: proj,
+    events:     LSP(pid,'events')     || [],
+    memos:      LSP(pid,'memos')      || [],
+    todos:      LSP(pid,'todos')      || [],
+    goal:       LSP(pid,'goal')       || {text:'연구 목표를 설정하세요.',history:[]},
+    notes:      LSP(pid,'notes')      || [],
+    milestones: LSP(pid,'milestones') || [],
+    expData:    LSP(pid,'expdata')    || [],
+    refs:       LSP(pid,'refs')       || [],
+    apiKey:     LS('rd_apikey')       || '',
+    calYear: new Date().getFullYear(), calMonth: new Date().getMonth(),
+    calSelectedDate: new Date().toISOString().slice(0,10),
+    todoTab:'all', noteFiles:[]
+  };
+  document.getElementById('psScreen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  renderAll();
 }
-const SEASON_META = {
-  spring: { label:'봄', icon:'🌸' },
-  summer: { label:'여름', icon:'☀️' },
-  autumn: { label:'가을', icon:'🍁' },
-  winter: { label:'겨울', icon:'❄️' }
-};
-function applySeasonTheme() {
+
+function backToProjects() {
+  if(expChart){expChart.destroy();expChart=null;}
+  state=null; _papers=[];
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('psScreen').style.display = 'block';
+  renderProjectScreen();
+}
+
+function renderProjectScreen() {
   const m = new Date().getMonth();
   const s = getSeason(m);
+  const meta = SEASON_META[s];
+  document.getElementById('psSeason').textContent = meta.icon+' '+meta.label;
+  document.getElementById('psDate').textContent =
+    new Date().toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'});
+
+  const cards = projects.map(p=>{
+    const kwTags = (p.keywords||'').split(/\s+/).slice(0,4)
+      .map(w=>`<span class="ps-kw-tag">${esc(w)}</span>`).join('');
+    return `<div class="ps-card" style="border-top:4px solid ${p.color}" onclick="openProject('${p.id}')">
+      <div class="ps-card-ctrl">
+        <button class="ps-ctrl-btn" onclick="event.stopPropagation();editProject('${p.id}')" title="편집">✏️</button>
+        <button class="ps-ctrl-btn" onclick="event.stopPropagation();deleteProject('${p.id}')" title="삭제">🗑️</button>
+      </div>
+      <div class="ps-card-name">${esc(p.name)}</div>
+      <div class="ps-card-desc">${esc(p.desc||'')}</div>
+      <div class="ps-card-kw">${kwTags}</div>
+      <div class="ps-card-date">시작일: ${p.startDate||'미정'}</div>
+    </div>`;
+  }).join('');
+
+  const newCard = `<div class="ps-card ps-card-new" onclick="openAddProject()">
+    <div class="ps-new-icon">+</div><div>새 프로젝트 만들기</div>
+  </div>`;
+
+  document.getElementById('psGrid').innerHTML = cards + newCard;
+}
+
+function openAddProject() {
+  _editProjId = null;
+  _projColor = PROJ_COLORS[projects.length % PROJ_COLORS.length];
+  document.getElementById('modalProjTitle').textContent = '➕ 새 프로젝트';
+  document.getElementById('projName').value = '';
+  document.getElementById('projDesc').value = '';
+  document.getElementById('projKeywords').value = DEFAULT_KW;
+  document.getElementById('projStartDate').value = new Date().toISOString().slice(0,10);
+  renderProjColorPicker();
+  document.getElementById('modalAddProject').classList.add('open');
+}
+
+function editProject(pid) {
+  const p = projects.find(pr=>pr.id===pid);
+  if(!p) return;
+  _editProjId = pid;
+  _projColor = p.color;
+  document.getElementById('modalProjTitle').textContent = '✏️ 프로젝트 편집';
+  document.getElementById('projName').value = p.name;
+  document.getElementById('projDesc').value = p.desc||'';
+  document.getElementById('projKeywords').value = p.keywords||DEFAULT_KW;
+  document.getElementById('projStartDate').value = p.startDate||'';
+  renderProjColorPicker();
+  document.getElementById('modalAddProject').classList.add('open');
+}
+
+function renderProjColorPicker() {
+  document.getElementById('projColorPicker').innerHTML = PROJ_COLORS.map(c=>
+    `<div class="cp-dot ${c===_projColor?'active':''}" style="background:${c}" onclick="pickProjColor(this,'${c}')"></div>`
+  ).join('');
+}
+
+function pickProjColor(el, color) {
+  _projColor = color;
+  document.querySelectorAll('#projColorPicker .cp-dot').forEach(d=>d.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function saveProject() {
+  const name = document.getElementById('projName').value.trim();
+  if(!name) return alert('프로젝트명을 입력하세요.');
+  const data = {
+    name, color: _projColor,
+    desc: document.getElementById('projDesc').value.trim(),
+    keywords: document.getElementById('projKeywords').value.trim() || DEFAULT_KW,
+    startDate: document.getElementById('projStartDate').value
+  };
+  if(_editProjId) {
+    const p = projects.find(pr=>pr.id===_editProjId);
+    if(p) Object.assign(p, data);
+  } else {
+    projects.push({id:uid(), ...data, createdAt:now()});
+  }
+  SS('rd_projects', projects);
+  closeModal('modalAddProject');
+  renderProjectScreen();
+}
+
+function deleteProject(pid) {
+  if(!confirm('프로젝트와 모든 데이터가 삭제됩니다. 계속하시겠습니까?')) return;
+  Object.keys(localStorage).filter(k=>k.startsWith(`rd_${pid}_`)).forEach(k=>localStorage.removeItem(k));
+  projects = projects.filter(p=>p.id!==pid);
+  SS('rd_projects', projects);
+  renderProjectScreen();
+}
+
+// ═══ SEASON ═══
+function getSeason(m) {
+  if(m>=2&&m<=4) return 'spring';
+  if(m>=5&&m<=7) return 'summer';
+  if(m>=8&&m<=10) return 'autumn';
+  return 'winter';
+}
+function applySeasonTheme() {
+  const s = getSeason(new Date().getMonth());
   document.body.classList.remove('spring','summer','autumn','winter');
   document.body.classList.add(s);
-  const meta = SEASON_META[s];
-  document.getElementById('seasonBadge').textContent = meta.icon + ' ' + meta.label;
 }
 
-// ═══════════════════════════════════
-// HEADER
-// ═══════════════════════════════════
+// ═══ HEADER ═══
 function updateHeader() {
-  const now = new Date();
+  if(!state) return;
+  document.getElementById('hdrTitle').textContent = state.project.name;
+  const s = getSeason(new Date().getMonth());
+  const meta = SEASON_META[s];
+  document.getElementById('seasonBadge').textContent = meta.icon+' '+meta.label;
+  const d = new Date();
   document.getElementById('todayBadge').textContent =
-    now.getFullYear() + '.' + String(now.getMonth()+1).padStart(2,'0') + '.' + String(now.getDate()).padStart(2,'0');
-  const ms = state.milestones;
-  const total = ms.length;
-  if(total === 0) {
-    document.getElementById('hdrProgress').textContent = '0%';
-    document.getElementById('hdrProgressFill').style.width = '0%';
-    return;
-  }
+    d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0');
   const done = state.todos.filter(t=>t.done).length;
-  const all = state.todos.length || 1;
-  const pct = Math.round((done/all)*100);
-  document.getElementById('hdrProgress').textContent = pct + '%';
-  document.getElementById('hdrProgressFill').style.width = pct + '%';
+  const total = state.todos.length||1;
+  const pct = Math.round(done/total*100);
+  document.getElementById('hdrProgress').textContent = pct+'%';
+  document.getElementById('hdrProgressFill').style.width = pct+'%';
 }
 
-// ═══════════════════════════════════
-// CALENDAR
-// ═══════════════════════════════════
+function renderAll() {
+  updateHeader();
+  renderCalendar();
+  renderMemos();
+  renderTodos();
+  renderGoal();
+  renderNotes();
+  renderTimeline();
+  renderExpChart();
+  renderRefs();
+  fetchPapers();
+}
+
+// ═══ CALENDAR ═══
 const DOWS = ['일','월','화','수','목','금','토'];
 const MONTHS_KO = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 
 function renderCalendar() {
-  const y = state.calYear, m = state.calMonth;
-  document.getElementById('calTitle').textContent = y + '년 ' + MONTHS_KO[m];
-
-  const firstDay = new Date(y, m, 1).getDay();
-  const daysInMonth = new Date(y, m+1, 0).getDate();
-  const prevDays = new Date(y, m, 0).getDate();
-  const today = new Date().toISOString().slice(0,10);
-
-  let html = DOWS.map(d=>`<div class="cal-dow">${d}</div>`).join('');
-
-  // prev month padding
+  const y=state.calYear, m=state.calMonth;
+  document.getElementById('calTitle').textContent = y+'년 '+MONTHS_KO[m];
+  const firstDay=new Date(y,m,1).getDay();
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const prevDays=new Date(y,m,0).getDate();
+  const today=new Date().toISOString().slice(0,10);
+  let html=DOWS.map(d=>`<div class="cal-dow">${d}</div>`).join('');
   for(let i=0;i<firstDay;i++){
-    const d = prevDays - firstDay + 1 + i;
-    const dateStr = `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    html += `<div class="cal-cell other-month" onclick="selectCalDate('${dateStr}')"><div class="cal-dn">${d}</div></div>`;
+    const d=prevDays-firstDay+1+i;
+    const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    html+=`<div class="cal-cell other-month" onclick="selectCalDate('${ds}')"><div class="cal-dn">${d}</div></div>`;
   }
-
   for(let d=1;d<=daysInMonth;d++){
-    const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const isToday = dateStr === today;
-    const isSelected = dateStr === state.calSelectedDate;
-    const evs = state.events.filter(e=>e.date===dateStr);
-    const dots = evs.map(e=>`<div class="cal-dot dot-${e.type==='research'?'blue':e.type==='general'?'green':'orange'}"></div>`).join('');
-    html += `<div class="cal-cell${isToday?' today':''}${isSelected&&!isToday?' selected':''}" onclick="selectCalDate('${dateStr}')">
-      <div class="cal-dn">${d}</div>
-      ${dots?`<div class="cal-dots">${dots}</div>`:''}
+    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const evs=state.events.filter(e=>e.date===ds);
+    const dots=evs.map(e=>`<div class="cal-dot dot-${e.type==='research'?'blue':e.type==='general'?'green':'orange'}"></div>`).join('');
+    html+=`<div class="cal-cell${ds===today?' today':''}${ds===state.calSelectedDate&&ds!==today?' selected':''}" onclick="selectCalDate('${ds}')">
+      <div class="cal-dn">${d}</div>${dots?`<div class="cal-dots">${dots}</div>`:''}
     </div>`;
   }
-
-  // next month padding
-  const remaining = 42 - firstDay - daysInMonth;
-  for(let d=1;d<=remaining;d++){
-    const dateStr = `${y}-${String(m+2).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    html += `<div class="cal-cell other-month" onclick="selectCalDate('${dateStr}')"><div class="cal-dn">${d}</div></div>`;
+  const rem=42-firstDay-daysInMonth;
+  for(let d=1;d<=rem;d++){
+    const ds=`${y}-${String(m+2).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    html+=`<div class="cal-cell other-month" onclick="selectCalDate('${ds}')"><div class="cal-dn">${d}</div></div>`;
   }
-
-  document.getElementById('calGrid').innerHTML = html;
+  document.getElementById('calGrid').innerHTML=html;
   renderEventList();
 }
-
-function renderEventList() {
-  const evs = state.events.filter(e=>e.date===state.calSelectedDate);
-  const el = document.getElementById('calEventList');
-  if(!evs.length){
-    el.innerHTML = `<div class="text-xs text-muted" style="padding:6px 0;text-align:center">${state.calSelectedDate} — 일정 없음</div>`;
-    return;
-  }
-  const TYPE = {research:{dot:'dot-blue',label:'연구'},general:{dot:'dot-green',label:'일반'},conference:{dot:'dot-orange',label:'학회'}};
-  el.innerHTML = evs.map((e,i)=>`
-    <div class="event-item">
-      <div class="ev-dot ${TYPE[e.type]?.dot||'dot-blue'}"></div>
-      <div class="ev-title">${e.title}</div>
-      <span class="tag badge-${e.type==='research'?'blue':e.type==='general'?'green':'orange'}" style="font-size:9px">${TYPE[e.type]?.label||''}</span>
-      <button class="ev-del" onclick="deleteEvent('${e.id}')">×</button>
-    </div>
-  `).join('');
+function renderEventList(){
+  const evs=state.events.filter(e=>e.date===state.calSelectedDate);
+  const el=document.getElementById('calEventList');
+  if(!evs.length){el.innerHTML=`<div class="text-xs text-muted" style="padding:6px 0;text-align:center">${state.calSelectedDate} — 일정 없음</div>`;return;}
+  const TYPE={research:{dot:'dot-blue',label:'연구'},general:{dot:'dot-green',label:'일반'},conference:{dot:'dot-orange',label:'학회'}};
+  el.innerHTML=evs.map(e=>`<div class="event-item">
+    <div class="ev-dot ${TYPE[e.type]?.dot||'dot-blue'}"></div>
+    <div class="ev-title">${esc(e.title)}</div>
+    <span class="tag badge-${e.type==='research'?'blue':e.type==='general'?'green':'orange'}" style="font-size:9px">${TYPE[e.type]?.label||''}</span>
+    <button class="ev-del" onclick="deleteEvent('${e.id}')">×</button>
+  </div>`).join('');
 }
+function selectCalDate(ds){state.calSelectedDate=ds;renderCalendar();}
+function calPrev(){if(state.calMonth===0){state.calYear--;state.calMonth=11;}else state.calMonth--;renderCalendar();}
+function calNext(){if(state.calMonth===11){state.calYear++;state.calMonth=0;}else state.calMonth++;renderCalendar();}
 
-function selectCalDate(dateStr) {
-  state.calSelectedDate = dateStr;
-  renderCalendar();
-}
-function calPrev() { if(state.calMonth===0){state.calYear--;state.calMonth=11;}else{state.calMonth--;} renderCalendar(); }
-function calNext() { if(state.calMonth===11){state.calYear++;state.calMonth=0;}else{state.calMonth++;} renderCalendar(); }
-
-function openAddEvent(dateStr) {
-  state.calSelectedDate = dateStr || state.calSelectedDate;
-  document.getElementById('modalEventDate').textContent = state.calSelectedDate;
-  document.getElementById('evDate').value = state.calSelectedDate;
-  document.getElementById('evTitle').value = '';
-  document.getElementById('evNote').value = '';
-  document.getElementById('evType').value = 'research';
-  document.getElementById('evConfUrlRow').style.display = 'none';
-  document.getElementById('evAutoResult').style.display = 'none';
-  document.getElementById('evConfUrl').value = '';
+function openAddEvent(){
+  document.getElementById('evDate').value=state.calSelectedDate;
+  document.getElementById('evTitle').value='';
+  document.getElementById('evNote').value='';
+  document.getElementById('evType').value='research';
+  document.getElementById('evConfUrlRow').style.display='none';
+  document.getElementById('evAutoResult').style.display='none';
+  document.getElementById('evConfUrl').value='';
   document.getElementById('modalAddEvent').classList.add('open');
-  document.getElementById('evType').onchange = function(){
-    document.getElementById('evConfUrlRow').style.display = this.value==='conference'?'block':'none';
-  };
 }
-
-function deleteEvent(id) {
-  state.events = state.events.filter(e=>e.id!==id);
-  save('events');
-  renderCalendar();
-}
-
-function saveEvent() {
-  const title = document.getElementById('evTitle').value.trim();
-  const date = document.getElementById('evDate').value;
-  const type = document.getElementById('evType').value;
-  const note = document.getElementById('evNote').value.trim();
+function deleteEvent(id){state.events=state.events.filter(e=>e.id!==id);save('events');renderCalendar();}
+function saveEvent(){
+  const title=document.getElementById('evTitle').value.trim();
+  const date=document.getElementById('evDate').value;
+  const type=document.getElementById('evType').value;
   if(!title||!date) return alert('제목과 날짜를 입력하세요.');
-  state.events.push({ id: uid(), title, date, type, note, createdAt: now() });
-  save('events');
-  closeModal('modalAddEvent');
-  renderCalendar();
+  state.events.push({id:uid(),title,date,type,note:document.getElementById('evNote').value.trim(),createdAt:now()});
+  save('events');closeModal('modalAddEvent');renderCalendar();
 }
-
-async function autoFillConf() {
-  const url = document.getElementById('evConfUrl').value.trim();
+async function autoFillConf(){
+  const url=document.getElementById('evConfUrl').value.trim();
   if(!url) return alert('URL을 입력하세요.');
   if(!state.apiKey) return alert('API Key를 설정하세요.');
-  const btn = event.target;
-  btn.textContent = '분석중...'; btn.disabled = true;
-  try {
-    const result = await callClaude(
-      `다음 학회 URL의 웹사이트를 분석해서 학회명, 날짜(시작일/종료일), 장소, 논문 제출 마감일을 JSON으로 추출해주세요.\n응답 형식: {"name":"학회명","start":"YYYY-MM-DD","end":"YYYY-MM-DD","location":"장소","deadline":"YYYY-MM-DD"}\nURL: ${url}`
-    );
-    let json = null;
-    try { json = JSON.parse(result.match(/\{[\s\S]*\}/)?.[0]||'{}'); } catch(e){}
-    if(json?.name) {
-      document.getElementById('evTitle').value = json.name;
-      document.getElementById('evDate').value = json.start || '';
-      const box = document.getElementById('evAutoResult');
-      box.style.display = 'block';
-      box.innerHTML = `<b>학회명:</b> ${json.name}<br><b>기간:</b> ${json.start||'?'} ~ ${json.end||'?'}<br><b>장소:</b> ${json.location||'?'}<br><b>마감일:</b> ${json.deadline||'?'}`;
-      // auto-add deadline if exists
-      if(json.deadline) {
-        state.events.push({ id:uid(), title:`[마감] ${json.name}`, date:json.deadline, type:'conference', note:`논문 제출 마감`, createdAt:now() });
-        save('events');
-      }
+  const btn=event.target; btn.textContent='분석중...';btn.disabled=true;
+  try{
+    const result=await callClaude(`다음 학회 URL을 분석해서 학회명, 날짜, 장소, 논문 제출 마감일을 JSON으로 추출해주세요.\n응답 형식: {"name":"학회명","start":"YYYY-MM-DD","end":"YYYY-MM-DD","location":"장소","deadline":"YYYY-MM-DD"}\nURL: ${url}`);
+    let json=null; try{json=JSON.parse(result.match(/\{[\s\S]*\}/)?.[0]||'{}');}catch(e){}
+    if(json?.name){
+      document.getElementById('evTitle').value=json.name;
+      document.getElementById('evDate').value=json.start||'';
+      const box=document.getElementById('evAutoResult');
+      box.style.display='block';
+      box.innerHTML=`<b>학회명:</b> ${json.name}<br><b>기간:</b> ${json.start||'?'} ~ ${json.end||'?'}<br><b>장소:</b> ${json.location||'?'}<br><b>마감일:</b> ${json.deadline||'?'}`;
+      if(json.deadline){state.events.push({id:uid(),title:`[마감] ${json.name}`,date:json.deadline,type:'conference',note:'논문 제출 마감',createdAt:now()});save('events');}
     }
-  } catch(e) { alert('분석 실패: ' + e.message); }
-  btn.textContent = '자동입력'; btn.disabled = false;
+  }catch(e){alert('분석 실패: '+e.message);}
+  btn.textContent='자동입력';btn.disabled=false;
 }
 
-// ═══════════════════════════════════
-// MEMO
-// ═══════════════════════════════════
-function openAddMemo() {
-  document.getElementById('memoTitle').value = '';
-  document.getElementById('memoBody').value = '';
-  state.memoColor = '#fff9c4';
-  document.querySelectorAll('.mc-color').forEach(el=>el.classList.remove('active'));
-  document.querySelector('.mc-color').classList.add('active');
+// ═══ MEMO ═══
+function openAddMemo(){
+  document.getElementById('memoTitle').value='';document.getElementById('memoBody').value='';
+  _memoColor='#fff9c4';
+  document.querySelectorAll('#memoColorPicker .mc-color').forEach((el,i)=>el.classList.toggle('active',i===0));
   document.getElementById('modalAddMemo').classList.add('open');
 }
-function selectMemoColor(el) {
-  document.querySelectorAll('.mc-color').forEach(e=>e.classList.remove('active'));
-  el.classList.add('active');
-  state.memoColor = el.dataset.color;
+function selectMemoColor(el){
+  document.querySelectorAll('#memoColorPicker .mc-color').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active'); _memoColor=el.dataset.color;
 }
-function saveMemo() {
-  const title = document.getElementById('memoTitle').value.trim();
-  const body = document.getElementById('memoBody').value.trim();
+function saveMemo(){
+  const title=document.getElementById('memoTitle').value.trim();
   if(!title) return alert('제목을 입력하세요.');
-  state.memos.push({ id:uid(), title, body, color:state.memoColor, createdAt:now() });
-  save('memos');
-  closeModal('modalAddMemo');
-  renderMemos();
+  state.memos.push({id:uid(),title,body:document.getElementById('memoBody').value.trim(),color:_memoColor,createdAt:now()});
+  save('memos');closeModal('modalAddMemo');renderMemos();
 }
-function deleteMemo(id) {
-  state.memos = state.memos.filter(m=>m.id!==id);
-  save('memos');
-  renderMemos();
-}
-function convertMemoToEvent(id) {
-  const memo = state.memos.find(m=>m.id===id);
-  if(!memo) return;
-  state.calSelectedDate = new Date().toISOString().slice(0,10);
+function deleteMemo(id){state.memos=state.memos.filter(m=>m.id!==id);save('memos');renderMemos();}
+function convertMemoToEvent(id){
+  const memo=state.memos.find(m=>m.id===id); if(!memo) return;
   openAddEvent();
-  document.getElementById('evTitle').value = memo.title;
-  document.getElementById('evNote').value = memo.body;
+  document.getElementById('evTitle').value=memo.title;
+  document.getElementById('evNote').value=memo.body;
 }
-function renderMemos() {
-  const el = document.getElementById('memoGrid');
-  if(!state.memos.length){
-    el.innerHTML = `<div class="text-xs text-muted" style="grid-column:span 2;padding:10px 0;text-align:center">메모가 없습니다.</div>`;
-    return;
-  }
-  el.innerHTML = state.memos.map(m=>`
-    <div class="memo-card" style="background:${m.color}">
-      <div class="mc-title">${esc(m.title)}</div>
-      <div class="mc-body">${esc(m.body)}</div>
-      <button class="mc-del" onclick="deleteMemo('${m.id}')">×</button>
-      <button class="mc-convert" onclick="convertMemoToEvent('${m.id}')">📅 일정으로</button>
-    </div>
-  `).join('');
+function renderMemos(){
+  const el=document.getElementById('memoGrid');
+  if(!state.memos.length){el.innerHTML=`<div class="text-xs text-muted" style="grid-column:span 2;padding:10px 0;text-align:center">메모가 없습니다.</div>`;return;}
+  el.innerHTML=state.memos.map(m=>`<div class="memo-card" style="background:${m.color}">
+    <div class="mc-title">${esc(m.title)}</div>
+    <div class="mc-body">${esc(m.body)}</div>
+    <button class="mc-del" onclick="deleteMemo('${m.id}')">×</button>
+    <button class="mc-convert" onclick="convertMemoToEvent('${m.id}')">📅 일정으로</button>
+  </div>`).join('');
 }
 
-// ═══════════════════════════════════
-// TODO
-// ═══════════════════════════════════
-function openAddTodo(titlePrefill) {
-  document.getElementById('todoTitle').value = titlePrefill || '';
-  document.getElementById('todoPriority').value = 'mid';
-  document.getElementById('todoCategory').value = 'exp';
-  document.getElementById('todoDue').value = '';
+// ═══ TODO ═══
+const PRIO_MAP={high:{cls:'prio-high',label:'높음'},mid:{cls:'prio-mid',label:'중간'},low:{cls:'prio-low',label:'낮음'}};
+const CAT_MAP={exp:'실험',analysis:'분석',paper:'문헌',etc:'기타'};
+
+function openAddTodo(titlePre){
+  document.getElementById('todoTitle').value=titlePre||'';
+  document.getElementById('todoPriority').value='mid';
+  document.getElementById('todoCategory').value='exp';
+  document.getElementById('todoDue').value='';
   document.getElementById('modalAddTodo').classList.add('open');
 }
-function saveTodo() {
-  const title = document.getElementById('todoTitle').value.trim();
+function saveTodo(){
+  const title=document.getElementById('todoTitle').value.trim();
   if(!title) return alert('내용을 입력하세요.');
-  const due = document.getElementById('todoDue').value;
-  state.todos.push({
-    id: uid(), title, priority: document.getElementById('todoPriority').value,
-    category: document.getElementById('todoCategory').value, due, done: false,
-    createdAt: now(), doneAt: null
-  });
-  save('todos');
-  closeModal('modalAddTodo');
-  renderTodos();
-  updateHeader();
+  state.todos.push({id:uid(),title,priority:document.getElementById('todoPriority').value,
+    category:document.getElementById('todoCategory').value,due:document.getElementById('todoDue').value,
+    done:false,createdAt:now(),doneAt:null});
+  save('todos');closeModal('modalAddTodo');renderTodos();updateHeader();
 }
-function toggleTodo(id) {
-  const t = state.todos.find(t=>t.id===id);
-  if(!t) return;
-  t.done = !t.done;
-  t.doneAt = t.done ? now() : null;
-  save('todos');
-  renderTodos();
-  updateHeader();
+function toggleTodo(id){
+  const t=state.todos.find(t=>t.id===id); if(!t) return;
+  t.done=!t.done; t.doneAt=t.done?now():null;
+  save('todos');renderTodos();updateHeader();
 }
-function deleteTodo(id) {
-  state.todos = state.todos.filter(t=>t.id!==id);
-  save('todos');
-  renderTodos();
-  updateHeader();
-}
-function switchTodoTab(tab, btn) {
-  state.todoTab = tab;
+function deleteTodo(id){state.todos=state.todos.filter(t=>t.id!==id);save('todos');renderTodos();updateHeader();}
+function switchTodoTab(tab,btn){
+  state.todoTab=tab;
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderTodos();
+  btn.classList.add('active');renderTodos();
 }
-function filterTodos() {
-  const now_date = new Date();
-  const week_end = new Date(now_date); week_end.setDate(now_date.getDate()+7);
-  const month_end = new Date(now_date); month_end.setDate(now_date.getDate()+30);
+function filterTodos(){
+  const now_d=new Date(),we=new Date(now_d),me=new Date(now_d);
+  we.setDate(now_d.getDate()+7);me.setDate(now_d.getDate()+30);
   if(state.todoTab==='all') return state.todos;
-  if(state.todoTab==='week') return state.todos.filter(t=>{
+  return state.todos.filter(t=>{
     if(!t.due) return false;
-    const d = new Date(t.due);
-    return d >= now_date && d <= week_end;
+    const d=new Date(t.due);
+    return d>=now_d&&d<=(state.todoTab==='week'?we:me);
   });
-  if(state.todoTab==='month') return state.todos.filter(t=>{
-    if(!t.due) return false;
-    const d = new Date(t.due);
-    return d >= now_date && d <= month_end;
-  });
-  return state.todos;
 }
-const PRIO_MAP = {high:{cls:'prio-high',label:'높음'},mid:{cls:'prio-mid',label:'중간'},low:{cls:'prio-low',label:'낮음'}};
-const CAT_MAP = {exp:'실험',analysis:'분석',paper:'문헌',etc:'기타'};
-function renderTodos() {
-  const list = filterTodos();
-  const done = state.todos.filter(t=>t.done).length;
-  const total = state.todos.length;
-  document.getElementById('todoProgressLabel').textContent = `${done} / ${total}`;
-  document.getElementById('todoProgressFill').style.width = total?Math.round(done/total*100)+'%':'0%';
-  const el = document.getElementById('todoList');
-  if(!list.length){ el.innerHTML=`<div class="text-xs text-muted" style="text-align:center;padding:10px 0">항목 없음</div>`; return; }
-  el.innerHTML = list.map(t=>`
-    <div class="todo-item${t.done?' done':''}">
-      <input type="checkbox" class="todo-cb" ${t.done?'checked':''} onchange="toggleTodo('${t.id}')">
-      <div class="todo-info">
-        <div class="todo-title">${esc(t.title)}</div>
-        <div class="todo-meta">
-          <span class="prio-badge ${PRIO_MAP[t.priority]?.cls||'prio-mid'}">${PRIO_MAP[t.priority]?.label||''}</span>
-          <span class="cat-badge">${CAT_MAP[t.category]||t.category}</span>
-          ${t.due?`<span class="due-badge">📅 ${t.due}</span>`:''}
-          ${t.doneAt?`<span class="due-badge">✅ ${t.doneAt.slice(0,10)}</span>`:''}
-        </div>
+function renderTodos(){
+  const list=filterTodos();
+  const done=state.todos.filter(t=>t.done).length,total=state.todos.length;
+  document.getElementById('todoProgressLabel').textContent=`${done} / ${total}`;
+  document.getElementById('todoProgressFill').style.width=total?Math.round(done/total*100)+'%':'0%';
+  const el=document.getElementById('todoList');
+  if(!list.length){el.innerHTML=`<div class="text-xs text-muted" style="text-align:center;padding:10px 0">항목 없음</div>`;return;}
+  el.innerHTML=list.map(t=>`<div class="todo-item${t.done?' done':''}">
+    <input type="checkbox" class="todo-cb" ${t.done?'checked':''} onchange="toggleTodo('${t.id}')">
+    <div class="todo-info">
+      <div class="todo-title">${esc(t.title)}</div>
+      <div class="todo-meta">
+        <span class="prio-badge ${PRIO_MAP[t.priority]?.cls||'prio-mid'}">${PRIO_MAP[t.priority]?.label||''}</span>
+        <span class="cat-badge">${CAT_MAP[t.category]||t.category}</span>
+        ${t.due?`<span class="due-badge">📅 ${t.due}</span>`:''}
+        ${t.doneAt?`<span class="due-badge">✅ ${t.doneAt.slice(0,10)}</span>`:''}
       </div>
-      <button class="btn btn-danger btn-xs" onclick="deleteTodo('${t.id}')">삭제</button>
     </div>
-  `).join('');
+    <button class="btn btn-danger btn-xs" onclick="deleteTodo('${t.id}')">삭제</button>
+  </div>`).join('');
 }
 
-// ═══════════════════════════════════
-// GOALS
-// ═══════════════════════════════════
-function openEditGoal() {
-  document.getElementById('goalInput').value = state.goal.text;
-  document.getElementById('goalReason').value = '';
+// ═══ GOALS ═══
+function openEditGoal(){
+  document.getElementById('goalInput').value=state.goal.text;
+  document.getElementById('goalReason').value='';
   document.getElementById('modalEditGoal').classList.add('open');
 }
-function saveGoal() {
-  const text = document.getElementById('goalInput').value.trim();
-  const reason = document.getElementById('goalReason').value.trim();
+function saveGoal(){
+  const text=document.getElementById('goalInput').value.trim();
+  const reason=document.getElementById('goalReason').value.trim();
   if(!text) return alert('내용을 입력하세요.');
-  if(text !== state.goal.text) {
-    state.goal.history.push({ date: now(), old: state.goal.text, new: text, reason });
-  }
-  state.goal.text = text;
-  save('goal');
-  closeModal('modalEditGoal');
-  renderGoal();
+  if(text!==state.goal.text) state.goal.history.push({date:now(),old:state.goal.text,new:text,reason});
+  state.goal.text=text; save('goal');closeModal('modalEditGoal');renderGoal();
 }
-function renderGoal() {
-  document.getElementById('goalText').textContent = state.goal.text;
-  const hist = state.goal.history;
-  const el = document.getElementById('goalHistory');
-  if(!hist.length){ el.innerHTML=`<div class="text-xs text-muted" style="text-align:center">수정 이력 없음</div>`; return; }
-  el.innerHTML = [...hist].reverse().map(h=>`
-    <div class="goal-hist-item">
-      <div class="gh-date">${h.date.slice(0,10)}</div>
-      <div>${esc(h.new)}</div>
-      ${h.reason?`<div class="gh-reason">이유: ${esc(h.reason)}</div>`:''}
-    </div>
-  `).join('');
+function renderGoal(){
+  document.getElementById('goalText').textContent=state.goal.text;
+  const el=document.getElementById('goalHistory');
+  if(!state.goal.history.length){el.innerHTML=`<div class="text-xs text-muted" style="text-align:center">수정 이력 없음</div>`;return;}
+  el.innerHTML=[...state.goal.history].reverse().map(h=>`<div class="goal-hist-item">
+    <div class="gh-date">${h.date.slice(0,10)}</div>
+    <div>${esc(h.new)}</div>
+    ${h.reason?`<div class="gh-reason">이유: ${esc(h.reason)}</div>`:''}
+  </div>`).join('');
 }
 
-// ═══════════════════════════════════
-// NOTES
-// ═══════════════════════════════════
-function openAddNote() {
+// ═══ NOTES ═══
+function openAddNote(){
   ['noteDate','noteExp','noteResult','noteProb','noteSol'].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el.type==='date') el.value = new Date().toISOString().slice(0,10);
-    else el.value='';
+    const el=document.getElementById(id);
+    el.value=el.type==='date'?new Date().toISOString().slice(0,10):'';
   });
-  state.noteFiles = [];
-  document.getElementById('noteFilePreview').innerHTML = '';
+  state.noteFiles=[];
+  document.getElementById('noteFilePreview').innerHTML='';
   document.getElementById('modalAddNote').classList.add('open');
-  const dz = document.getElementById('noteDropZone');
-  dz.ondragover = e=>{ e.preventDefault(); dz.classList.add('drag-over'); };
-  dz.ondragleave = ()=>dz.classList.remove('drag-over');
-  dz.ondrop = e=>{ e.preventDefault(); dz.classList.remove('drag-over'); handleNoteFilesRaw(e.dataTransfer.files); };
+  const dz=document.getElementById('noteDropZone');
+  dz.ondragover=e=>{e.preventDefault();dz.classList.add('drag-over');};
+  dz.ondragleave=()=>dz.classList.remove('drag-over');
+  dz.ondrop=e=>{e.preventDefault();dz.classList.remove('drag-over');handleNoteFilesRaw(e.dataTransfer.files);};
 }
-
-function handleNoteFiles(event) { handleNoteFilesRaw(event.target.files); }
-function handleNoteFilesRaw(files) {
+function handleNoteFiles(event){handleNoteFilesRaw(event.target.files);}
+function handleNoteFilesRaw(files){
   Array.from(files).forEach(file=>{
-    const reader = new FileReader();
-    reader.onload = e=>{
-      const isImg = file.type.startsWith('image/');
-      const fileObj = { name:file.name, type:file.type, data:e.target.result, uploadedAt:now(), isImg };
-      state.noteFiles.push(fileObj);
-      const preview = document.getElementById('noteFilePreview');
-      if(isImg){
-        const img = document.createElement('img');
-        img.src = e.target.result; img.className='note-img';
-        preview.appendChild(img);
-      } else {
-        const div = document.createElement('div');
-        div.className='note-file';
-        div.innerHTML=`📎 ${esc(file.name)}`;
-        preview.appendChild(div);
-      }
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const isImg=file.type.startsWith('image/');
+      state.noteFiles.push({name:file.name,type:file.type,data:e.target.result,uploadedAt:now(),isImg});
+      const prev=document.getElementById('noteFilePreview');
+      if(isImg){const img=document.createElement('img');img.src=e.target.result;img.className='note-img';prev.appendChild(img);}
+      else{const d=document.createElement('div');d.className='note-file';d.innerHTML=`📎 ${esc(file.name)}`;prev.appendChild(d);}
     };
     reader.readAsDataURL(file);
   });
 }
-
-function saveNote() {
-  const date = document.getElementById('noteDate').value;
-  const exp = document.getElementById('noteExp').value.trim();
+function saveNote(){
+  const date=document.getElementById('noteDate').value;
+  const exp=document.getElementById('noteExp').value.trim();
   if(!date||!exp) return alert('날짜와 실험 내용을 입력하세요.');
-  const note = {
-    id: uid(), date, exp, result: document.getElementById('noteResult').value.trim(),
-    prob: document.getElementById('noteProb').value.trim(), sol: document.getElementById('noteSol').value.trim(),
-    files: state.noteFiles, aiResult: null, createdAt: now()
-  };
-  state.notes.push(note);
-  save('notes');
-  // timeline event
-  addTimelineNote(note);
-  state.noteFiles.forEach(f=>{
-    if(f.isImg||f.type==='application/pdf'||f.name.endsWith('.csv'))
-      addTimelineFile(f, note.date);
-  });
-  closeModal('modalAddNote');
-  renderNotes();
+  const note={id:uid(),date,exp,result:document.getElementById('noteResult').value.trim(),
+    prob:document.getElementById('noteProb').value.trim(),sol:document.getElementById('noteSol').value.trim(),
+    files:state.noteFiles,aiResult:null,createdAt:now()};
+  state.notes.push(note); save('notes');
+  closeModal('modalAddNote');renderNotes();renderTimeline();
 }
-
-async function analyzeNote(noteId) {
+function deleteNote(id){state.notes=state.notes.filter(n=>n.id!==id);save('notes');renderNotes();renderTimeline();}
+async function analyzeNote(noteId){
   if(!state.apiKey) return alert('API Key를 설정하세요.');
-  const note = state.notes.find(n=>n.id===noteId);
-  if(!note) return;
-  const btn = document.querySelector(`[data-analyze="${noteId}"]`);
-  if(btn){ btn.textContent='분석중...'; btn.disabled=true; }
-  const context = `날짜: ${note.date}\n실험내용: ${note.exp}\n결과: ${note.result}\n문제점: ${note.prob}\n해결방법: ${note.sol}`;
-  const imgs = note.files.filter(f=>f.isImg).map(f=>f.data);
-  try {
-    const result = await callClaudeWithImages(
-      `다음 연구 노트를 분석해주세요:\n${context}\n\n첨부 이미지를 포함하여 실험 결과를 해석하고 개선점을 제안해주세요.`,
-      imgs
-    );
-    note.aiResult = result;
-    save('notes');
-    renderNotes();
-  } catch(e) { alert('분석 실패: '+e.message); }
-  if(btn){ btn.textContent='🤖 AI 분석'; btn.disabled=false; }
+  const note=state.notes.find(n=>n.id===noteId); if(!note) return;
+  const btn=document.querySelector(`[data-analyze="${noteId}"]`);
+  if(btn){btn.textContent='분석중...';btn.disabled=true;}
+  const ctx=`날짜:${note.date}\n실험내용:${note.exp}\n결과:${note.result}\n문제점:${note.prob}\n해결방법:${note.sol}`;
+  const imgs=note.files.filter(f=>f.isImg).map(f=>f.data);
+  try{
+    const result=await callClaudeWithImages(`다음 연구 노트를 분석하고 실험 결과 해석 및 개선 제안을 해주세요:\n${ctx}`,imgs);
+    note.aiResult=result; save('notes');renderNotes();
+  }catch(e){alert('분석 실패: '+e.message);}
+  if(btn){btn.textContent='🤖 AI 분석';btn.disabled=false;}
 }
-
-function renderNotes() {
-  const el = document.getElementById('notesList');
-  if(!state.notes.length){ el.innerHTML=`<div class="text-xs text-muted" style="padding:12px">노트가 없습니다.</div>`; return; }
-  el.innerHTML = [...state.notes].sort((a,b)=>b.date.localeCompare(a.date)).map(n=>`
+function viewImg(src){document.getElementById('imgViewerSrc').src=src;document.getElementById('modalImgViewer').classList.add('open');}
+function renderNotes(){
+  const el=document.getElementById('notesList');
+  if(!state.notes.length){el.innerHTML=`<div class="text-xs text-muted" style="padding:12px">노트가 없습니다.</div>`;return;}
+  el.innerHTML=[...state.notes].sort((a,b)=>b.date.localeCompare(a.date)).map(n=>`
     <div class="note-item">
       <div class="note-date">${n.date}</div>
-      ${n.exp?`<div class="note-field"><div class="nf-label">실험 내용</div><div class="nf-val">${esc(n.exp)}</div></div>`:''}
-      ${n.result?`<div class="note-field"><div class="nf-label">결과</div><div class="nf-val">${esc(n.result)}</div></div>`:''}
-      ${n.prob?`<div class="note-field"><div class="nf-label">문제점</div><div class="nf-val">${esc(n.prob)}</div></div>`:''}
-      ${n.sol?`<div class="note-field"><div class="nf-label">해결방법</div><div class="nf-val">${esc(n.sol)}</div></div>`:''}
+      ${n.exp?`<div><div class="nf-label">실험 내용</div><div class="nf-val">${esc(n.exp)}</div></div>`:''}
+      ${n.result?`<div><div class="nf-label">결과</div><div class="nf-val">${esc(n.result)}</div></div>`:''}
+      ${n.prob?`<div><div class="nf-label">문제점</div><div class="nf-val">${esc(n.prob)}</div></div>`:''}
+      ${n.sol?`<div><div class="nf-label">해결방법</div><div class="nf-val">${esc(n.sol)}</div></div>`:''}
       ${n.files.filter(f=>f.isImg).length?`<div class="note-imgs">${n.files.filter(f=>f.isImg).map(f=>`<img src="${f.data}" class="note-img" onclick="viewImg('${f.data}')">`).join('')}</div>`:''}
-      ${n.files.filter(f=>!f.isImg).length?`<div class="note-files">${n.files.filter(f=>!f.isImg).map(f=>`<div class="note-file">📎 ${esc(f.name)} <span class="text-muted">(${f.uploadedAt.slice(0,10)})</span></div>`).join('')}</div>`:''}
+      ${n.files.filter(f=>!f.isImg).length?`<div class="note-files">${n.files.filter(f=>!f.isImg).map(f=>`<div class="note-file">📎 ${esc(f.name)} <span class="text-muted">(${f.uploadedAt?.slice(0,10)})</span></div>`).join('')}</div>`:''}
       <div class="flex gap6 mt8">
         <button class="btn btn-ghost btn-sm" data-analyze="${n.id}" onclick="analyzeNote('${n.id}')">🤖 AI 분석</button>
         <button class="btn btn-danger btn-sm" onclick="deleteNote('${n.id}')">삭제</button>
       </div>
       ${n.aiResult?`<div class="note-ai-result">${esc(n.aiResult)}</div>`:''}
-    </div>
-  `).join('');
-}
-function deleteNote(id) {
-  state.notes = state.notes.filter(n=>n.id!==id);
-  save('notes');
-  renderNotes();
-  renderTimeline();
-}
-function viewImg(src) {
-  document.getElementById('imgViewerSrc').src = src;
-  document.getElementById('modalImgViewer').classList.add('open');
+    </div>`).join('');
 }
 
-// ═══════════════════════════════════
-// TIMELINE
-// ═══════════════════════════════════
-function addTimelineNote(note) {
-  // already tracked via notes list
-  renderTimeline();
-}
-function addTimelineFile(file, date) { renderTimeline(); }
-
-function openAddMilestone() {
-  document.getElementById('msTitle').value = '';
-  document.getElementById('msDate').value = new Date().toISOString().slice(0,10);
+// ═══ TIMELINE ═══
+function openAddMilestone(){
+  document.getElementById('msTitle').value='';
+  document.getElementById('msDate').value=new Date().toISOString().slice(0,10);
   document.getElementById('modalAddMilestone').classList.add('open');
 }
-function saveMilestone() {
-  const title = document.getElementById('msTitle').value.trim();
-  const date = document.getElementById('msDate').value;
+function saveMilestone(){
+  const title=document.getElementById('msTitle').value.trim();
+  const date=document.getElementById('msDate').value;
   if(!title||!date) return alert('내용과 날짜를 입력하세요.');
-  state.milestones.push({ id:uid(), title, date, createdAt:now() });
-  save('milestones');
-  closeModal('modalAddMilestone');
-  renderTimeline();
-  updateHeader();
+  state.milestones.push({id:uid(),title,date,createdAt:now()});
+  save('milestones');closeModal('modalAddMilestone');renderTimeline();updateHeader();
 }
-function renderTimeline() {
-  const startDate = new Date(state.startDate);
-  const endDate = new Date();
-  const totalMs = endDate - startDate || 1;
-
-  // collect events
-  let events = [];
-  state.milestones.forEach(m=>events.push({type:'milestone',date:m.date,title:m.title,id:m.id,data:m}));
-  state.notes.forEach(n=>events.push({type:'note',date:n.date,title:'노트: '+n.exp.slice(0,20),id:n.id,data:n}));
-  state.notes.flatMap(n=>n.files).forEach(f=>events.push({type:'file',date:f.uploadedAt?.slice(0,10)||'',title:'파일: '+f.name,id:uid(),data:f}));
-  events = events.filter(e=>e.date).sort((a,b)=>a.date.localeCompare(b.date));
-
-  const track = document.getElementById('tlEvents');
-  if(!events.length){ track.innerHTML='<div class="text-xs text-muted" style="padding:20px">이벤트 없음</div>'; return; }
-
-  const trackWidth = document.getElementById('timelineTrack').offsetWidth - 40;
-  track.innerHTML = events.map((ev,i)=>{
-    const d = new Date(ev.date);
-    const ratio = Math.min(1, Math.max(0, (d-startDate)/totalMs));
-    const left = Math.round(ratio * trackWidth);
-    const dotCls = ev.type==='milestone'?'tl-dot-milestone':ev.type==='note'?'tl-dot-note':'tl-dot-file';
-    const emoji = ev.type==='milestone'?'✅':ev.type==='note'?'📓':'📎';
-    return `<div class="tl-event" style="left:${left}px;top:${i%2===0?'0':'-30px'}" onclick="openTlDetail('${ev.type}','${ev.id}')">
+function renderTimeline(){
+  const startDate=new Date(state.project.startDate||new Date());
+  const endDate=new Date();
+  const totalMs=(endDate-startDate)||1;
+  let events=[];
+  state.milestones.forEach(m=>events.push({type:'milestone',date:m.date,title:m.title,id:m.id}));
+  state.notes.forEach(n=>events.push({type:'note',date:n.date,title:'노트: '+n.exp.slice(0,20),id:n.id}));
+  events=events.filter(e=>e.date).sort((a,b)=>a.date.localeCompare(b.date));
+  const track=document.getElementById('tlEvents');
+  if(!events.length){track.innerHTML='<div class="text-xs text-muted" style="padding:20px">이벤트 없음</div>';return;}
+  const tw=document.getElementById('timelineTrack').offsetWidth-40;
+  track.innerHTML=events.map((ev,i)=>{
+    const ratio=Math.min(1,Math.max(0,(new Date(ev.date)-startDate)/totalMs));
+    const left=Math.round(ratio*tw);
+    const dotCls=ev.type==='milestone'?'tl-dot-milestone':'tl-dot-note';
+    const emoji=ev.type==='milestone'?'✅':'📓';
+    return `<div class="tl-event" style="left:${left}px;top:${i%2===0?'0':'-28px'}" onclick="openTlDetail('${ev.type}','${ev.id}')">
       <div class="tl-dot ${dotCls}"></div>
-      <div class="tl-label">${emoji} ${esc(ev.date.slice(5))}<br>${esc(ev.title.slice(0,16))}</div>
+      <div class="tl-label">${emoji} ${esc(ev.date.slice(5))}<br>${esc(ev.title.slice(0,14))}</div>
     </div>`;
   }).join('');
 }
-function openTlDetail(type, id) {
-  let item, title='', body='';
-  if(type==='milestone') {
-    item = state.milestones.find(m=>m.id===id);
-    if(!item) return;
-    title='✅ 마일스톤';
-    body=`<b>${item.title}</b><br><span class="text-muted">${item.date}</span>`;
-  } else if(type==='note') {
-    item = state.notes.find(n=>n.id===id);
-    if(!item) return;
-    title='📓 연구 노트';
-    body=`<b>${item.date}</b><br>${esc(item.exp)}<br><br><b>결과:</b> ${esc(item.result)}`;
-  } else {
-    title='📎 파일';
-    body='파일 업로드 이벤트';
-  }
-  document.getElementById('tlDetailTitle').innerHTML = title;
-  document.getElementById('tlDetailBody').innerHTML = body;
+function openTlDetail(type,id){
+  let item,title='',body='';
+  if(type==='milestone'){item=state.milestones.find(m=>m.id===id);if(!item)return;title='✅ 마일스톤';body=`<b>${esc(item.title)}</b><br><span class="text-muted">${item.date}</span>`;}
+  else{item=state.notes.find(n=>n.id===id);if(!item)return;title='📓 연구 노트';body=`<b>${item.date}</b><br>${esc(item.exp)}<br><br><b>결과:</b> ${esc(item.result)}`;}
+  document.getElementById('tlDetailTitle').innerHTML=title;
+  document.getElementById('tlDetailBody').innerHTML=body;
   document.getElementById('modalTlDetail').classList.add('open');
 }
 
-// ═══════════════════════════════════
-// EXPERIMENT DATA
-// ═══════════════════════════════════
-let expChart = null;
-function openAddExpData() { document.getElementById('modalAddExpData').classList.add('open'); }
-function saveExpData() {
-  const time = parseFloat(document.getElementById('expTime').value);
-  const temp = parseFloat(document.getElementById('expTemp').value);
-  const memo = document.getElementById('expMemo').value.trim();
+// ═══ EXPERIMENT ═══
+function openAddExpData(){document.getElementById('modalAddExpData').classList.add('open');}
+function saveExpData(){
+  const time=parseFloat(document.getElementById('expTime').value);
+  const temp=parseFloat(document.getElementById('expTemp').value);
   if(isNaN(time)||isNaN(temp)) return alert('시간과 온도를 입력하세요.');
-  state.expData.push({ id:uid(), time, temp, memo, createdAt:now() });
-  save('expData');
-  closeModal('modalAddExpData');
-  renderExpChart();
+  state.expData.push({id:uid(),time,temp,memo:document.getElementById('expMemo').value.trim(),createdAt:now()});
+  save('expData');closeModal('modalAddExpData');renderExpChart();
 }
-function renderExpChart() {
-  const ctx = document.getElementById('expChart').getContext('2d');
-  const sorted = [...state.expData].sort((a,b)=>a.time-b.time);
+function renderExpChart(){
+  const ctx=document.getElementById('expChart').getContext('2d');
+  const sorted=[...state.expData].sort((a,b)=>a.time-b.time);
   if(expChart) expChart.destroy();
-  expChart = new Chart(ctx, {
+  const accentColor=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#ffb7c5';
+  expChart=new Chart(ctx,{
     type:'line',
-    data:{
-      labels: sorted.map(d=>d.time+'분'),
-      datasets:[{
-        label:'온도 (°C)', data:sorted.map(d=>d.temp),
-        borderColor: getComputedStyle(document.body).getPropertyValue('--accent').trim() || '#ffb7c5',
-        backgroundColor: getComputedStyle(document.body).getPropertyValue('--accent-light').trim() || '#ffe4ec',
-        fill:true, tension:.4, pointRadius:5, pointHoverRadius:7
-      }]
-    },
-    options:{
-      responsive:true, maintainAspectRatio:false,
+    data:{labels:sorted.map(d=>d.time+'분'),datasets:[{
+      label:'온도 (°C)',data:sorted.map(d=>d.temp),
+      borderColor:accentColor,backgroundColor:accentColor+'33',
+      fill:true,tension:.4,pointRadius:5,pointHoverRadius:7
+    }]},
+    options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false}},
-      scales:{x:{grid:{display:false}},y:{grid:{color:'#f0f0f0'}}}
-    }
+      scales:{x:{grid:{display:false}},y:{grid:{color:'#f0f0f0'}}}}
   });
 }
-async function openExpAnalysis() {
+async function openExpAnalysis(){
   if(!state.apiKey) return alert('API Key를 설정하세요.');
   if(!state.expData.length) return alert('데이터가 없습니다.');
-  const data = state.expData.map(d=>`시간:${d.time}분, 온도:${d.temp}°C${d.memo?' ('+d.memo+')':''}`).join('\n');
-  try {
-    const result = await callClaude(`다음 마이크로플루이딕 유도가열 실험 데이터를 분석해주세요:\n${data}\n\n온도 변화 패턴 분석, 이상치, 개선 방향을 제시해주세요.`);
-    alert(result);
-  } catch(e) { alert('분석 실패: '+e.message); }
+  const data=state.expData.map(d=>`시간:${d.time}분, 온도:${d.temp}°C${d.memo?' ('+d.memo+')':''}`).join('\n');
+  try{const r=await callClaude(`다음 실험 데이터를 분석해주세요:\n${data}\n\n온도 변화 패턴, 이상치, 개선 방향을 제안해주세요.`);alert(r);}
+  catch(e){alert('분석 실패: '+e.message);}
 }
 
-// ═══════════════════════════════════
-// PAPERS (arXiv + Semantic Scholar)
-// ═══════════════════════════════════
-const ARXIV_QUERY = 'microfluidic+induction+heating+temperature+control';
-
-function paperCardHTML(p) {
-  const titleEsc = esc(p.title);
-  const titleAttr = p.title.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+// ═══ PAPERS ═══
+function paperCardHTML(p, idx) {
+  const ta = p.title.replace(/'/g,"\\'").replace(/"/g,'&quot;');
   return `<div class="paper-item">
-    <div class="paper-title" onclick="window.open('${p.link}','_blank')">${titleEsc}</div>
-    <div class="paper-meta">${esc((p.authors||'').slice(0,90))} · ${esc(p.date||'')} <span class="tag" style="background:var(--accent-light);color:var(--accent-dark);margin-left:4px">${p.source}</span></div>
-    <div class="paper-abstract">${esc((p.abstract||'').slice(0,300))}${(p.abstract||'').length>300?'…':''}</div>
+    <div class="paper-title" onclick="window.open('${p.link}','_blank')">${esc(p.title)}</div>
+    <div class="paper-meta">${esc((p.authors||'').slice(0,90))} · ${esc(p.date||'')}
+      <span class="tag" style="background:var(--accent-light);color:var(--accent-dark);margin-left:4px">${p.source}</span></div>
+    <div class="paper-abstract">${esc((p.abstract||'').slice(0,280))}${(p.abstract||'').length>280?'…':''}</div>
     <div class="paper-actions">
-      <button class="btn btn-ghost btn-xs" onclick="addPaperTodo('${titleAttr}')">✅ TODO 추가</button>
+      <button class="btn btn-ghost btn-xs" onclick="addRefFromPaper(${idx})">📚 참고문헌 추가</button>
+      <button class="btn btn-ghost btn-xs" onclick="addPaperTodo('${ta}')">✅ TODO 추가</button>
       <button class="btn btn-ghost btn-xs" onclick="window.open('${p.link}','_blank')">🔗 원문</button>
     </div>
   </div>`;
 }
 
-function parseArxivXML(text) {
-  const parser = new DOMParser();
-  const xml = parser.parseFromString(text, 'application/xml');
-  return Array.from(xml.querySelectorAll('entry')).map(e => ({
-    source: 'arXiv',
-    title: e.querySelector('title')?.textContent?.trim() || '',
-    authors: Array.from(e.querySelectorAll('author name')).map(a=>a.textContent).join(', '),
-    date: e.querySelector('published')?.textContent?.slice(0,10) || '',
-    abstract: e.querySelector('summary')?.textContent?.trim() || '',
-    link: e.querySelector('id')?.textContent?.trim() || ''
-  })).filter(p => p.title);
+function parseArxivXML(text){
+  const xml=new DOMParser().parseFromString(text,'application/xml');
+  return Array.from(xml.querySelectorAll('entry')).map(e=>({
+    source:'arXiv',
+    title:e.querySelector('title')?.textContent?.trim()||'',
+    authors:Array.from(e.querySelectorAll('author name')).map(a=>a.textContent).join(', '),
+    date:e.querySelector('published')?.textContent?.slice(0,10)||'',
+    abstract:e.querySelector('summary')?.textContent?.trim()||'',
+    link:e.querySelector('id')?.textContent?.trim()||''
+  })).filter(p=>p.title);
 }
-
-function parseSemanticScholar(data) {
+function parseSemanticScholar(data){
   if(!data?.data) return [];
-  return data.data.map(p => {
-    const arxivId = p.externalIds?.ArXiv;
-    const link = arxivId
-      ? `https://arxiv.org/abs/${arxivId}`
-      : `https://www.semanticscholar.org/paper/${p.paperId}`;
-    return {
-      source: 'S2',
-      title: p.title || '',
-      authors: (p.authors||[]).map(a=>a.name).join(', '),
-      date: p.year ? String(p.year) : '',
-      abstract: p.abstract || '',
-      link
+  return data.data.map(p=>{
+    const axId=p.externalIds?.ArXiv;
+    return {source:'S2',title:p.title||'',
+      authors:(p.authors||[]).map(a=>a.name).join(', '),date:p.year?String(p.year):'',
+      abstract:p.abstract||'',
+      link:axId?`https://arxiv.org/abs/${axId}`:`https://www.semanticscholar.org/paper/${p.paperId}`
     };
-  }).filter(p => p.title);
+  }).filter(p=>p.title);
+}
+function dedupePapers(papers){
+  const seen=new Set();
+  return papers.filter(p=>{const k=p.title.toLowerCase().replace(/\s+/g,'').slice(0,40);if(seen.has(k))return false;seen.add(k);return true;});
 }
 
-function dedupePapers(papers) {
-  const seen = new Set();
-  return papers.filter(p => {
-    const key = p.title.toLowerCase().replace(/\s+/g,'').slice(0,40);
-    if(seen.has(key)) return false;
-    seen.add(key); return true;
-  });
-}
+async function fetchPapers(){
+  const el=document.getElementById('papersList');
+  el.innerHTML='<div class="text-xs text-muted" style="padding:12px;grid-column:1/-1">논문 불러오는 중...</div>';
+  const kw=(state.project.keywords||DEFAULT_KW);
+  const kwQ=kw.replace(/\s+/g,'+');
+  document.getElementById('paperKeywordLabel').textContent='키워드: '+kw.split(/\s+/).slice(0,3).join(', ');
 
-async function fetchPapers() {
-  const el = document.getElementById('papersList');
-  el.innerHTML = '<div class="text-xs text-muted" style="padding:12px">논문 불러오는 중...</div>';
+  const arxivUrl=`https://export.arxiv.org/api/query?search_query=${kwQ}&max_results=8&sortBy=submittedDate&sortOrder=descending`;
+  const proxyUrl='https://corsproxy.io/?'+encodeURIComponent(arxivUrl);
+  const ssUrl=`https://api.semanticscholar.org/graph/v1/paper/search?query=${encodeURIComponent(kw)}&fields=title,authors,year,abstract,externalIds&limit=8`;
 
-  const arxivUrl = `https://export.arxiv.org/api/query?search_query=${ARXIV_QUERY}&max_results=8&sortBy=submittedDate&sortOrder=descending`;
-  const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(arxivUrl);
-  const ssUrl = `https://api.semanticscholar.org/graph/v1/paper/search?query=microfluidic+induction+heating&fields=title,authors,year,abstract,externalIds&limit=8`;
-
-  const [arxivRes, ssRes] = await Promise.allSettled([
-    fetch(proxyUrl, {signal: AbortSignal.timeout(10000)}).then(r => { if(!r.ok) throw new Error('proxy '+r.status); return r.text(); }),
-    fetch(ssUrl, {signal: AbortSignal.timeout(10000)}).then(r => r.json())
+  const [arxivRes,ssRes]=await Promise.allSettled([
+    fetch(proxyUrl,{signal:AbortSignal.timeout(12000)}).then(r=>{if(!r.ok)throw new Error('proxy '+r.status);return r.text();}),
+    fetch(ssUrl,{signal:AbortSignal.timeout(12000)}).then(r=>r.json())
   ]);
 
-  let papers = [];
+  let papers=[];
+  if(arxivRes.status==='fulfilled'){try{papers.push(...parseArxivXML(arxivRes.value));}catch(e){}}
+  if(ssRes.status==='fulfilled'){try{papers.push(...parseSemanticScholar(ssRes.value));}catch(e){}}
+  _papers=dedupePapers(papers);
 
-  if(arxivRes.status === 'fulfilled') {
-    try { papers.push(...parseArxivXML(arxivRes.value)); } catch(e) {}
-  }
-  if(ssRes.status === 'fulfilled') {
-    try { papers.push(...parseSemanticScholar(ssRes.value)); } catch(e) {}
-  }
-
-  papers = dedupePapers(papers);
-
-  if(!papers.length) {
-    const errMsg = [
-      arxivRes.status==='rejected' ? 'arXiv: '+arxivRes.reason?.message : '',
-      ssRes.status==='rejected'    ? 'S2: '+ssRes.reason?.message : ''
+  if(!_papers.length){
+    const errs=[
+      arxivRes.status==='rejected'?'arXiv: '+arxivRes.reason?.message:'',
+      ssRes.status==='rejected'?'S2: '+ssRes.reason?.message:''
     ].filter(Boolean).join(' / ');
-    el.innerHTML = `<div class="text-xs text-muted" style="padding:12px">논문을 불러오지 못했습니다.<br><span style="color:#dc2626">${esc(errMsg)}</span></div>`;
+    el.innerHTML=`<div class="text-xs text-muted" style="padding:12px">논문을 불러오지 못했습니다.<br><span style="color:#dc2626">${esc(errs||'알 수 없는 오류')}</span></div>`;
     return;
   }
-
-  el.innerHTML = `<div class="text-xs text-muted" style="padding:0 0 10px;grid-column:1/-1">${papers.length}편 (arXiv + Semantic Scholar)</div>` +
-    papers.map(paperCardHTML).join('');
+  el.innerHTML=`<div class="text-xs text-muted" style="padding:0 0 10px;grid-column:1/-1">${_papers.length}편 로드됨</div>`+
+    _papers.map((p,i)=>paperCardHTML(p,i)).join('');
 }
-function addPaperTodo(title) {
-  state.todos.push({
-    id:uid(), title:'[논문 읽기] '+title, priority:'mid', category:'paper',
-    due:'', done:false, createdAt:now(), doneAt:null
+
+function addPaperTodo(title){
+  state.todos.push({id:uid(),title:'[논문 읽기] '+title,priority:'mid',category:'paper',due:'',done:false,createdAt:now(),doneAt:null});
+  save('todos');renderTodos();updateHeader();alert('TODO에 추가됐습니다.');
+}
+
+function addRefFromPaper(idx){
+  const p=_papers[idx]; if(!p) return;
+  state.refs.push({id:uid(),title:p.title,authors:p.authors||'',journal:'',year:p.date?.slice(0,4)||'',doi:'',link:p.link,createdAt:now()});
+  save('refs');renderRefs();
+  alert('참고문헌에 추가됐습니다.');
+}
+
+// ═══ REFERENCES ═══
+function openAddRef(prefill){
+  document.getElementById('refTitle').value=prefill?.title||'';
+  document.getElementById('refAuthors').value=prefill?.authors||'';
+  document.getElementById('refJournal').value=prefill?.journal||'';
+  document.getElementById('refYear').value=prefill?.year||'';
+  document.getElementById('refDoi').value=prefill?.doi||'';
+  document.getElementById('refLink').value=prefill?.link||'';
+  document.getElementById('modalAddRef').classList.add('open');
+}
+function saveRef(){
+  const title=document.getElementById('refTitle').value.trim();
+  if(!title) return alert('제목을 입력하세요.');
+  state.refs.push({id:uid(),title,authors:document.getElementById('refAuthors').value.trim(),
+    journal:document.getElementById('refJournal').value.trim(),year:document.getElementById('refYear').value,
+    doi:document.getElementById('refDoi').value.trim(),link:document.getElementById('refLink').value.trim(),createdAt:now()});
+  save('refs');closeModal('modalAddRef');renderRefs();
+}
+function deleteRef(id){state.refs=state.refs.filter(r=>r.id!==id);save('refs');renderRefs();}
+function exportRefs(){
+  if(!state.refs.length) return alert('참고문헌이 없습니다.');
+  const text=state.refs.map((r,i)=>{
+    const authors=r.authors||'저자 미상';
+    const year=r.year?` (${r.year}).`:'';
+    const journal=r.journal?` ${r.journal}.`:'';
+    const doi=r.doi?` https://doi.org/${r.doi}`:r.link?` ${r.link}`:'';
+    return `[${i+1}] ${authors}${year} ${r.title}.${journal}${doi}`;
+  }).join('\n\n');
+  navigator.clipboard.writeText(text).then(()=>alert('클립보드에 복사됐습니다.')).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);alert('복사됐습니다.');
   });
-  save('todos');
-  renderTodos();
-  updateHeader();
-  alert('TODO에 추가되었습니다.');
+}
+function renderRefs(){
+  const el=document.getElementById('refsList');
+  if(!state.refs.length){el.innerHTML=`<div class="text-xs text-muted" style="padding:10px 0;text-align:center">참고문헌이 없습니다. 논문 카드에서 추가하거나 직접 입력하세요.</div>`;return;}
+  el.innerHTML=state.refs.map((r,i)=>`<div class="ref-item">
+    <div class="ref-num">[${i+1}]</div>
+    <div class="ref-info">
+      <div class="ref-title" ${r.link?`onclick="window.open('${r.link}','_blank')"`:''}">${esc(r.title)}</div>
+      <div class="ref-meta">${[r.authors,r.year,r.journal].filter(Boolean).map(esc).join(' · ')}</div>
+      ${r.doi?`<div class="ref-doi">DOI: ${esc(r.doi)}</div>`:''}
+    </div>
+    <button class="btn btn-danger btn-xs" onclick="deleteRef('${r.id}')">삭제</button>
+  </div>`).join('');
 }
 
-// ═══════════════════════════════════
-// AI ANALYSIS
-// ═══════════════════════════════════
-async function runFullAnalysis() {
-  if(!state.apiKey) { openSettings(); return; }
-  const el = document.getElementById('aiResultArea');
-  el.innerHTML = '<div class="ai-loading"><div class="spinner"></div>AI 분석 중...</div>';
-
-  const context = buildResearchContext();
-  try {
-    const result = await callClaude(
-      `당신은 연구 논문 작성 전문가입니다. 다음 마이크로플루이딕 유도가열 온도제어 연구 데이터를 분석해주세요.\n\n${context}\n\n다음 4가지를 분석해주세요:\n1. 투고 적합 저널 TOP3 추천 (저널명, 임팩트 팩터, 이유)\n2. 부족한 실험/데이터 목록 (각 항목을 번호로 구분)\n3. 예상 리뷰어 코멘트 및 revision 포인트 (3가지)\n4. 연구 완성도 점수 (0~100점, 근거 포함)\n\n각 섹션을 [저널추천], [부족한실험], [리뷰어코멘트], [완성도점수] 태그로 구분해서 작성하세요.`
+// ═══ AI ANALYSIS ═══
+async function runFullAnalysis(){
+  if(!state.apiKey){openSettings();return;}
+  const el=document.getElementById('aiResultArea');
+  el.innerHTML='<div class="ai-loading"><div class="spinner"></div>AI 분석 중...</div>';
+  const ctx=[
+    `=== 연구 목표 ===\n${state.goal.text}`,
+    state.notes.length?`=== 연구 노트 (${state.notes.length}건) ===\n`+state.notes.map(n=>`[${n.date}] ${n.exp} / 결과: ${n.result}`).join('\n'):'',
+    state.expData.length?`=== 실험 데이터 ===\n`+state.expData.map(d=>`시간:${d.time}분 온도:${d.temp}°C`).join('\n'):'',
+    state.milestones.length?`=== 마일스톤 ===\n`+state.milestones.map(m=>`[${m.date}] ${m.title}`).join('\n'):''
+  ].filter(Boolean).join('\n\n');
+  try{
+    const result=await callClaude(
+      `당신은 연구 논문 작성 전문가입니다. 다음 연구 데이터를 분석해주세요.\n\n${ctx}\n\n다음 4가지를 분석해주세요:\n1. 투고 적합 저널 TOP3 추천 (저널명, 임팩트 팩터, 이유)\n2. 부족한 실험/데이터 목록 (각 항목을 번호로 구분)\n3. 예상 리뷰어 코멘트 및 revision 포인트 (3가지)\n4. 연구 완성도 점수 (0~100점, 근거 포함)\n\n각 섹션을 [저널추천], [부족한실험], [리뷰어코멘트], [완성도점수] 태그로 구분해서 작성하세요.`
     );
     renderAIResult(result);
-  } catch(e) {
-    el.innerHTML = `<div class="text-xs" style="color:#dc2626;padding:12px">오류: ${e.message}</div>`;
-  }
+  }catch(e){el.innerHTML=`<div class="text-xs" style="color:#dc2626;padding:12px">오류: ${esc(e.message)}</div>`;}
 }
-
-function buildResearchContext() {
-  const parts = [];
-  parts.push(`=== 연구 목표 ===\n${state.goal.text}`);
-  if(state.notes.length) parts.push(`=== 연구 노트 (${state.notes.length}건) ===\n`+state.notes.map(n=>`[${n.date}] ${n.exp} / 결과: ${n.result}`).join('\n'));
-  if(state.expData.length) parts.push(`=== 실험 데이터 ===\n`+state.expData.map(d=>`시간:${d.time}분 온도:${d.temp}°C`).join('\n'));
-  if(state.milestones.length) parts.push(`=== 마일스톤 ===\n`+state.milestones.map(m=>`[${m.date}] ${m.title}`).join('\n'));
-  return parts.join('\n\n');
-}
-
-function renderAIResult(text) {
-  const el = document.getElementById('aiResultArea');
-  // Parse sections
-  const sections = {
-    journals: extractSection(text, '저널추천'),
-    missing: extractSection(text, '부족한실험'),
-    reviewer: extractSection(text, '리뷰어코멘트'),
-    score: extractSection(text, '완성도점수')
-  };
-
-  // Extract score number
-  const scoreMatch = sections.score.match(/(\d+)/);
-  const score = scoreMatch ? parseInt(scoreMatch[1]) : '?';
-
-  // Parse missing experiments
-  const missingLines = sections.missing.split('\n').filter(l=>l.trim()&&/^\d+\./.test(l.trim()));
-
-  el.innerHTML = `
-    <div class="ai-score">
-      <div class="score-num">${score}</div>
-      <div><div class="score-label">연구 완성도 점수</div><div class="text-xs text-muted">/ 100점</div></div>
+function extractSection(text,tag){const m=text.match(new RegExp(`\\[${tag}\\]([\\s\\S]*?)(?=\\[|$)`));return m?m[1].trim():'';}
+function renderAIResult(text){
+  const journals=extractSection(text,'저널추천');
+  const missing=extractSection(text,'부족한실험');
+  const reviewer=extractSection(text,'리뷰어코멘트');
+  const score=extractSection(text,'완성도점수');
+  const scoreNum=(score.match(/(\d+)/)||['?'])[0];
+  const missingLines=missing.split('\n').filter(l=>l.trim()&&/^\d+\./.test(l.trim()));
+  document.getElementById('aiResultArea').innerHTML=`
+    <div class="ai-score"><div class="score-num">${scoreNum}</div><div><div class="score-label">연구 완성도 점수</div><div class="text-xs text-muted">/ 100점</div></div></div>
+    <div class="ai-section"><div class="ai-section-title">📚 투고 적합 저널 추천</div><div class="ai-result-box">${esc(journals)}</div></div>
+    <div class="ai-section"><div class="ai-section-title">🧪 부족한 실험/데이터</div>
+      ${missingLines.map(l=>`<div class="missing-item"><span>${esc(l)}</span><button class="btn btn-ghost btn-xs" onclick="addMissingTodo('${l.replace(/'/g,"\\'")}')">✅ TODO</button></div>`).join('')}
+      ${!missingLines.length?`<div class="ai-result-box">${esc(missing)}</div>`:''}
     </div>
-    <div class="ai-section">
-      <div class="ai-section-title">📚 투고 적합 저널 추천</div>
-      <div class="ai-result-box">${esc(sections.journals)}</div>
-    </div>
-    <div class="ai-section">
-      <div class="ai-section-title">🧪 부족한 실험/데이터</div>
-      ${missingLines.map((l,i)=>`
-        <div class="missing-item">
-          <span>${esc(l)}</span>
-          <button class="btn btn-ghost btn-xs" onclick="addMissingTodo('${esc(l).replace(/'/g,'&#39;')}')">✅ TODO</button>
-        </div>
-      `).join('')}
-      ${!missingLines.length?`<div class="ai-result-box">${esc(sections.missing)}</div>`:''}
-    </div>
-    <div class="ai-section">
-      <div class="ai-section-title">💬 예상 리뷰어 코멘트</div>
-      <div class="ai-result-box">${esc(sections.reviewer)}</div>
-    </div>
-  `;
+    <div class="ai-section"><div class="ai-section-title">💬 예상 리뷰어 코멘트</div><div class="ai-result-box">${esc(reviewer)}</div></div>`;
 }
-
-function extractSection(text, tag) {
-  const re = new RegExp(`\\[${tag}\\]([\\s\\S]*?)(?=\\[|$)`);
-  const m = text.match(re);
-  return m ? m[1].trim() : '';
+function addMissingTodo(title){
+  state.todos.push({id:uid(),title:'[AI추천] '+title,priority:'high',category:'exp',due:'',done:false,createdAt:now(),doneAt:null});
+  save('todos');renderTodos();updateHeader();alert('TODO에 추가됐습니다.');
 }
-
-function addMissingTodo(title) {
-  state.todos.push({ id:uid(), title:'[AI추천] '+title, priority:'high', category:'exp', due:'', done:false, createdAt:now(), doneAt:null });
-  save('todos');
-  renderTodos();
-  updateHeader();
-  alert('TODO에 추가되었습니다.');
-}
-
-async function analyzeConfUrl() {
-  const url = document.getElementById('confUrlInput').value.trim();
+async function analyzeConfUrl(){
+  const url=document.getElementById('confUrlInput').value.trim();
   if(!url) return alert('URL을 입력하세요.');
-  if(!state.apiKey) { openSettings(); return; }
-  const btn = event.target;
-  btn.textContent='분석중...'; btn.disabled=true;
-  try {
-    const result = await callClaude(
-      `다음 학회 URL을 분석해서 학회명, 날짜(시작일/종료일), 장소, 논문 제출 마감일을 JSON으로 추출해주세요.\n응답 형식: {"name":"학회명","start":"YYYY-MM-DD","end":"YYYY-MM-DD","location":"장소","deadline":"YYYY-MM-DD"}\nURL: ${url}`
-    );
-    let json = null;
-    try { json = JSON.parse(result.match(/\{[\s\S]*\}/)?.[0]||'{}'); } catch(e){}
-    if(json?.name) {
-      state.events.push({ id:uid(), title:json.name, date:json.start||new Date().toISOString().slice(0,10), type:'conference', note:`장소: ${json.location||'?'} / 마감: ${json.deadline||'?'}`, createdAt:now() });
-      if(json.deadline) state.events.push({ id:uid(), title:`[마감] ${json.name}`, date:json.deadline, type:'conference', note:'논문 제출 마감', createdAt:now() });
-      save('events');
-      renderCalendar();
-      alert(`학회 일정이 등록되었습니다!\n${json.name}\n${json.start} ~ ${json.end}`);
-    } else { alert('학회 정보를 추출하지 못했습니다.\n원문:\n'+result.slice(0,200)); }
-  } catch(e) { alert('오류: '+e.message); }
-  btn.textContent='분석'; btn.disabled=false;
+  if(!state.apiKey){openSettings();return;}
+  const btn=event.target;btn.textContent='분석중...';btn.disabled=true;
+  try{
+    const result=await callClaude(`다음 학회 URL을 분석해서 학회명, 날짜, 장소, 논문 제출 마감일을 JSON으로 추출해주세요.\n응답 형식: {"name":"학회명","start":"YYYY-MM-DD","end":"YYYY-MM-DD","location":"장소","deadline":"YYYY-MM-DD"}\nURL: ${url}`);
+    let json=null;try{json=JSON.parse(result.match(/\{[\s\S]*\}/)?.[0]||'{}');}catch(e){}
+    if(json?.name){
+      state.events.push({id:uid(),title:json.name,date:json.start||new Date().toISOString().slice(0,10),type:'conference',note:`장소:${json.location||'?'} / 마감:${json.deadline||'?'}`,createdAt:now()});
+      if(json.deadline) state.events.push({id:uid(),title:`[마감] ${json.name}`,date:json.deadline,type:'conference',note:'논문 제출 마감',createdAt:now()});
+      save('events');renderCalendar();
+      alert(`학회 일정이 등록됐습니다!\n${json.name}\n${json.start} ~ ${json.end}`);
+    }else{alert('학회 정보를 추출하지 못했습니다.\n'+result.slice(0,200));}
+  }catch(e){alert('오류: '+e.message);}
+  btn.textContent='분석';btn.disabled=false;
 }
 
-// ═══════════════════════════════════
-// SETTINGS
-// ═══════════════════════════════════
-function openSettings() {
-  document.getElementById('apiKeyInput').value = state.apiKey || '';
-  document.getElementById('researchStartDate').value = state.startDate;
+// ═══ SETTINGS ═══
+function openSettings(){
+  if(!state) return;
+  document.getElementById('apiKeyInput').value=state.apiKey||'';
+  document.getElementById('settingsProjName').value=state.project.name;
+  document.getElementById('settingsProjDesc').value=state.project.desc||'';
+  document.getElementById('settingsProjKeywords').value=state.project.keywords||DEFAULT_KW;
+  document.getElementById('settingsProjStartDate').value=state.project.startDate||'';
   document.getElementById('modalSettings').classList.add('open');
 }
-function saveSettings() {
-  state.apiKey = document.getElementById('apiKeyInput').value.trim();
-  state.startDate = document.getElementById('researchStartDate').value;
-  SS('rd_apikey', state.apiKey);
-  SS('rd_startdate', state.startDate);
-  closeModal('modalSettings');
-  renderTimeline();
+function saveSettings(){
+  state.apiKey=document.getElementById('apiKeyInput').value.trim();
+  SS('rd_apikey',state.apiKey);
+  state.project.name=document.getElementById('settingsProjName').value.trim()||state.project.name;
+  state.project.desc=document.getElementById('settingsProjDesc').value.trim();
+  state.project.keywords=document.getElementById('settingsProjKeywords').value.trim()||DEFAULT_KW;
+  state.project.startDate=document.getElementById('settingsProjStartDate').value;
+  SS('rd_projects',projects);
+  closeModal('modalSettings');updateHeader();renderTimeline();
 }
 
-// ═══════════════════════════════════
-// CLAUDE API
-// ═══════════════════════════════════
-async function callClaude(prompt) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+// ═══ CLAUDE API ═══
+async function callClaude(prompt){
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
-    headers:{ 'Content-Type':'application/json', 'x-api-key':state.apiKey, 'anthropic-version':'2023-06-01' },
-    body:JSON.stringify({
-      model:'claude-sonnet-4-20250514', max_tokens:2000,
-      messages:[{role:'user',content:prompt}]
-    })
+    headers:{'Content-Type':'application/json','x-api-key':state.apiKey,'anthropic-version':'2023-06-01'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:prompt}]})
   });
-  if(!res.ok){ const err=await res.json(); throw new Error(err.error?.message||res.statusText); }
-  const data = await res.json();
-  return data.content[0].text;
+  if(!res.ok){const err=await res.json();throw new Error(err.error?.message||res.statusText);}
+  return (await res.json()).content[0].text;
 }
-
-async function callClaudeWithImages(prompt, imageDataUrls) {
-  const content = [];
+async function callClaudeWithImages(prompt,imageDataUrls){
+  const content=[];
   imageDataUrls.forEach(dataUrl=>{
-    const m = dataUrl.match(/^data:([^;]+);base64,(.+)$/);
-    if(m) content.push({ type:'image', source:{ type:'base64', media_type:m[1], data:m[2] } });
+    const m=dataUrl.match(/^data:([^;]+);base64,(.+)$/);
+    if(m) content.push({type:'image',source:{type:'base64',media_type:m[1],data:m[2]}});
   });
-  content.push({ type:'text', text:prompt });
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+  content.push({type:'text',text:prompt});
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
-    headers:{ 'Content-Type':'application/json', 'x-api-key':state.apiKey, 'anthropic-version':'2023-06-01' },
-    body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:2000, messages:[{role:'user',content}] })
+    headers:{'Content-Type':'application/json','x-api-key':state.apiKey,'anthropic-version':'2023-06-01'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content}]})
   });
-  if(!res.ok){ const err=await res.json(); throw new Error(err.error?.message||res.statusText); }
-  const data = await res.json();
-  return data.content[0].text;
+  if(!res.ok){const err=await res.json();throw new Error(err.error?.message||res.statusText);}
+  return (await res.json()).content[0].text;
 }
 
-// ═══════════════════════════════════
-// MODAL UTILS
-// ═══════════════════════════════════
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+// ═══ MODAL UTILS ═══
+function closeModal(id){document.getElementById(id).classList.remove('open');}
 document.querySelectorAll('.modal-overlay').forEach(el=>{
-  el.addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); });
+  el.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');});
 });
 
-// ═══════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════
-function uid() { return Math.random().toString(36).slice(2,10)+Date.now().toString(36); }
-function now() { return new Date().toISOString(); }
-function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+// ═══ HELPERS ═══
+function uid(){return Math.random().toString(36).slice(2,10)+Date.now().toString(36);}
+function now(){return new Date().toISOString();}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-// ═══════════════════════════════════
-// INIT
-// ═══════════════════════════════════
-function init() {
+// ═══ INIT ═══
+function init(){
   applySeasonTheme();
-  updateHeader();
-  renderCalendar();
-  renderMemos();
-  renderTodos();
-  renderGoal();
-  renderNotes();
-  renderTimeline();
-  renderExpChart();
-  fetchPapers();
+  renderProjectScreen();
 }
-
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded',init);
 </script>
 </body>
 </html>
