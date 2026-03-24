@@ -1348,39 +1348,99 @@ async function openExpAnalysis() {
 }
 
 // ═══════════════════════════════════
-// PAPERS (arXiv)
+// PAPERS (arXiv + Semantic Scholar)
 // ═══════════════════════════════════
+const ARXIV_QUERY = 'microfluidic+induction+heating+temperature+control';
+
+function paperCardHTML(p) {
+  const titleEsc = esc(p.title);
+  const titleAttr = p.title.replace(/'/g,"\\'").replace(/"/g,'&quot;');
+  return `<div class="paper-item">
+    <div class="paper-title" onclick="window.open('${p.link}','_blank')">${titleEsc}</div>
+    <div class="paper-meta">${esc((p.authors||'').slice(0,90))} · ${esc(p.date||'')} <span class="tag" style="background:var(--accent-light);color:var(--accent-dark);margin-left:4px">${p.source}</span></div>
+    <div class="paper-abstract">${esc((p.abstract||'').slice(0,300))}${(p.abstract||'').length>300?'…':''}</div>
+    <div class="paper-actions">
+      <button class="btn btn-ghost btn-xs" onclick="addPaperTodo('${titleAttr}')">✅ TODO 추가</button>
+      <button class="btn btn-ghost btn-xs" onclick="window.open('${p.link}','_blank')">🔗 원문</button>
+    </div>
+  </div>`;
+}
+
+function parseArxivXML(text) {
+  const parser = new DOMParser();
+  const xml = parser.parseFromString(text, 'application/xml');
+  return Array.from(xml.querySelectorAll('entry')).map(e => ({
+    source: 'arXiv',
+    title: e.querySelector('title')?.textContent?.trim() || '',
+    authors: Array.from(e.querySelectorAll('author name')).map(a=>a.textContent).join(', '),
+    date: e.querySelector('published')?.textContent?.slice(0,10) || '',
+    abstract: e.querySelector('summary')?.textContent?.trim() || '',
+    link: e.querySelector('id')?.textContent?.trim() || ''
+  })).filter(p => p.title);
+}
+
+function parseSemanticScholar(data) {
+  if(!data?.data) return [];
+  return data.data.map(p => {
+    const arxivId = p.externalIds?.ArXiv;
+    const link = arxivId
+      ? `https://arxiv.org/abs/${arxivId}`
+      : `https://www.semanticscholar.org/paper/${p.paperId}`;
+    return {
+      source: 'S2',
+      title: p.title || '',
+      authors: (p.authors||[]).map(a=>a.name).join(', '),
+      date: p.year ? String(p.year) : '',
+      abstract: p.abstract || '',
+      link
+    };
+  }).filter(p => p.title);
+}
+
+function dedupePapers(papers) {
+  const seen = new Set();
+  return papers.filter(p => {
+    const key = p.title.toLowerCase().replace(/\s+/g,'').slice(0,40);
+    if(seen.has(key)) return false;
+    seen.add(key); return true;
+  });
+}
+
 async function fetchPapers() {
   const el = document.getElementById('papersList');
   el.innerHTML = '<div class="text-xs text-muted" style="padding:12px">논문 불러오는 중...</div>';
-  try {
-    const url = 'https://export.arxiv.org/api/query?search_query=microfluidic+induction+heating+temperature+control&max_results=8&sortBy=submittedDate&sortOrder=descending';
-    const res = await fetch(url);
-    const text = await res.text();
-    const parser = new DOMParser();
-    const xml = parser.parseFromString(text, 'application/xml');
-    const entries = xml.querySelectorAll('entry');
-    if(!entries.length){ el.innerHTML='<div class="text-xs text-muted" style="padding:12px">논문 없음</div>'; return; }
-    el.innerHTML = Array.from(entries).map(e=>{
-      const title = e.querySelector('title')?.textContent?.trim()||'';
-      const authors = Array.from(e.querySelectorAll('author name')).map(a=>a.textContent).join(', ');
-      const published = e.querySelector('published')?.textContent?.slice(0,10)||'';
-      const abstract = e.querySelector('summary')?.textContent?.trim()||'';
-      const link = e.querySelector('id')?.textContent?.trim()||'';
-      const pid = 'p_'+btoa(link).replace(/[^a-z0-9]/gi,'').slice(0,8);
-      return `<div class="paper-item">
-        <div class="paper-title" onclick="window.open('${link}','_blank')">${esc(title)}</div>
-        <div class="paper-meta">${esc(authors.slice(0,80))} · ${published}</div>
-        <div class="paper-abstract">${esc(abstract)}</div>
-        <div class="paper-actions">
-          <button class="btn btn-ghost btn-xs" onclick="addPaperTodo('${esc(title).replace(/'/g,'&#39;')}')">✅ TODO 추가</button>
-          <button class="btn btn-ghost btn-xs" onclick="window.open('${link}','_blank')">🔗 원문</button>
-        </div>
-      </div>`;
-    }).join('');
-  } catch(e) {
-    el.innerHTML=`<div class="text-xs text-muted" style="padding:12px">오류: ${e.message}<br>(CORS 제한으로 직접 접근이 안 될 수 있습니다. 네트워크 환경을 확인하세요.)</div>`;
+
+  const arxivUrl = `https://export.arxiv.org/api/query?search_query=${ARXIV_QUERY}&max_results=8&sortBy=submittedDate&sortOrder=descending`;
+  const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(arxivUrl);
+  const ssUrl = `https://api.semanticscholar.org/graph/v1/paper/search?query=microfluidic+induction+heating&fields=title,authors,year,abstract,externalIds&limit=8`;
+
+  const [arxivRes, ssRes] = await Promise.allSettled([
+    fetch(proxyUrl, {signal: AbortSignal.timeout(10000)}).then(r => { if(!r.ok) throw new Error('proxy '+r.status); return r.text(); }),
+    fetch(ssUrl, {signal: AbortSignal.timeout(10000)}).then(r => r.json())
+  ]);
+
+  let papers = [];
+
+  if(arxivRes.status === 'fulfilled') {
+    try { papers.push(...parseArxivXML(arxivRes.value)); } catch(e) {}
   }
+  if(ssRes.status === 'fulfilled') {
+    try { papers.push(...parseSemanticScholar(ssRes.value)); } catch(e) {}
+  }
+
+  papers = dedupePapers(papers);
+
+  if(!papers.length) {
+    const errMsg = [
+      arxivRes.status==='rejected' ? 'arXiv: '+arxivRes.reason?.message : '',
+      ssRes.status==='rejected'    ? 'S2: '+ssRes.reason?.message : ''
+    ].filter(Boolean).join(' / ');
+    el.innerHTML = `<div class="text-xs text-muted" style="padding:12px">논문을 불러오지 못했습니다.<br><span style="color:#dc2626">${esc(errMsg)}</span></div>`;
+    return;
+  }
+
+  el.innerHTML = `<div class="text-xs text-muted" style="padding:0 0 10px;grid-column:1/-1">${papers.length}편 (arXiv + Semantic Scholar)</div>` +
+    papers.map(paperCardHTML).join('');
 }
 function addPaperTodo(title) {
   state.todos.push({
